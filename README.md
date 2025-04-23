@@ -2,8 +2,6 @@
 
 A full-stack web application built using the MERN stack (MongoDB, Express.js, React.js, Node.js) and Tailwind CSS for responsive UI. This system helps manage library operations such as user authentication, book inventory, issue/return transactions, fine calculation, and reviews efficiently and securely.
 
----
-
 ## 🚀 Features
 
 - 🔐 User authentication and role management (Admin/User)
@@ -16,23 +14,25 @@ A full-stack web application built using the MERN stack (MongoDB, Express.js, Re
 - 🔔 Notifications for due dates
 - 📈 Modular and scalable backend API
 
----
-
 ## 🛠️ Technologies Used
 
-### Frontend:
+### Frontend
+
 - React.js
 - Tailwind CSS
+- Axios
 - React Router DOM
 
-### Backend:
+### Backend
+
 - Node.js
 - Express.js
 - MongoDB + Mongoose
 - JSON Web Token (JWT) for auth
 - Bcrypt for password hashing
 
-### Tools & Platforms:
+### Tools & Platforms
+
 - Git & GitHub
 - Postman (API Testing)
 - Render (Backend Deployment)
