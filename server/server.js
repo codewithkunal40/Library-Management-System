@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
+import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
 import { errorMiddleware } from "./middlewares/errorMiddlewares.js";
 
@@ -16,9 +17,13 @@ app.use(
   })
 );
 
+// Middlewares
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
