@@ -1,37 +1,48 @@
-// import React from "react";
-// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-// import Login from "./components/Login";
-// import Register from "./components/Register";
+import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AuthPopup from "./components/AuthPopup";
+import AdminDashboard from "./components/AdminDashboard";
+import UserDashboard from "./components/UserDashboard";
+import Login from "./components/Login"
+import { ToastContainer } from "react-toastify";
 
-// const App = () => {
-//   return (
-//     <Router>
-//       <div className="App">
-//         <ToastContainer />
-//         <Switch>
-//           <Route path="/login" component={Login} />
-//           <Route path="/register" component={Register} />
-//         </Switch>
-//       </div>
-//     </Router>
-//   );
-// };
+function Home() {
+  const [showPopup, setShowPopup] = useState(false);
 
-// export default App;
-
-
-
-
-import React from 'react'
-
-const App = () => {
   return (
-    <div className='text-red-500 hover:text-blue-500 hover:underline text-center my-20 font-bold '>
-      LIBRARY MANAGEMENT SYSTEM
+    <div className="h-screen flex flex-col items-center justify-center bg-gray-100">
+      <button
+        onClick={() => setShowPopup(true)}
+        className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 mb-4"
+      >
+        Sign Up
+      </button>
+
+      <a
+        href="/login"
+        className="text-blue-600 underline hover:text-blue-800"
+      >
+        Already have an account? Login
+      </a>
+
+      {showPopup && <AuthPopup setShowPopup={setShowPopup} />}
+
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
