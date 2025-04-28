@@ -2,7 +2,7 @@ import libraryImage from "../assets/libraray Image 2.webp";
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-white p-6 gap-8">
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-black p-6 gap-8">
       <div className="flex-1 flex justify-center">
         <img
           src={libraryImage}
