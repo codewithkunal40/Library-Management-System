@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 
 const Navbar = ({ setShowPopup }) => {
   return (
-    <nav className="bg-blue-900 shadow-md p-4 flex justify-between items-center">
+    <nav className="bg-blue-900 shadow-md p-4 flex justify-between items-center pl-10 pr-10">
+      <div className="text-2xl font-bold text-yellow-500 hover:text-red-600">
+        Library Management System
+      </div>
       <div className="flex space-x-4">
         <Link to="/" className="text-yellow-500 hover:text-red-600 font-medium">
           Home
@@ -32,9 +35,7 @@ const Navbar = ({ setShowPopup }) => {
           Sign Up
         </button>
       </div>
-      <div className="text-2xl font-bold text-yellow-500 hover:text-red-600">
-        Library Management System
-      </div>
+      
     </nav>
   );
 };
