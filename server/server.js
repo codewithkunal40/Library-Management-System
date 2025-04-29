@@ -4,7 +4,7 @@ import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
-import { errorMiddleware } from "./middlewares/errorMiddlewares.js";
+
 
 dotenv.config();
 const app = express();

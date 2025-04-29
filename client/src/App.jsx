@@ -1,37 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import { useState } from "react";
+import React from 'react'
 
-import Navbar from "./components/Navbar";
-import HomePage from "./components/HomePage";
-import AboutPage from "./components/AboutPage";
-import ContactPage from "./components/ContactPage";
-import AuthPopup from "./components/AuthPopup";
-import AdminDashboard from "./components/AdminDashboard";
-import UserDashboard from "./components/UserDashboard";
-import Login from "./components/Login";
-
-function App() {
-  const [showPopup, setShowPopup] = useState(false);
-
+const App = () => {
   return (
-    <Router>
-      <Navbar setShowPopup={setShowPopup} />
-
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/user-dashboard" element={<UserDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      </Routes>
-
-      {showPopup && <AuthPopup setShowPopup={setShowPopup} />}
-
-      <ToastContainer position="top-center" autoClose={3000} />
-    </Router>
-  );
+    <div className='text-center font-bold text-red-500 hover:text-red-900 my-18 hover:underline hover:font-semibold'>
+      Library Management System
+    </div>
+  )
 }
 
-export default App;
+export default App
