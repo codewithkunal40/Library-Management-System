@@ -4,9 +4,27 @@ import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
+import passport from "passport";
+import cookieSession from "cookie-session";
+import configurePassport from './passport.js';
 
 dotenv.config();
 const app = express();
+
+configurePassport();
+
+
+app.use(
+  cookieSession({
+    name:"session",
+    keys:["cyberwolve"],
+    maxAge:24*60*60*100,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use(
   cors({
