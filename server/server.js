@@ -5,7 +5,6 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
 
-
 dotenv.config();
 const app = express();
 
@@ -32,4 +31,3 @@ app.listen(PORT, () => {
 });
 
 connectDB();
-app.use(errorMiddleware);
