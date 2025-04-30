@@ -6,6 +6,10 @@ const LoginPage = () => {
         password: "",
     });
 
+    const handleGoogleLogin = () => {
+        window.open("http://localhost:3000/api/auth/google", "_self");
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -29,14 +33,62 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-        <h2 className="text-2xl font-bold mb-4 text-center text-orange-600">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-            <input name="identifier" placeholder="Email or Username" onChange={handleChange} required className="w-full border px-3 py-2 rounded" />
-            <input name="password" type="password" placeholder="Password" onChange={handleChange} required className="w-full border px-3 py-2 rounded" />
-            <button type="submit" className="bg-orange-500 text-white w-full py-2 rounded">Login</button>
-        </form>
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-10">
+            <div className="relative w-full h-[34vh]">
+                <img
+                    src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
+                    alt="Library"
+                    className="w-full h-full object-cover"
+                />
+            </div>
+
+            <div className="w-full flex flex-col items-center px-6 py-10 bg-white">
+                <h1 className="text-6xl font-bold text-black mb-2 text-center">
+                    Hello <span className="text-orange-500">There!</span>
+                </h1>
+                <p className="text-gray-600 text-center mb-6 text-lg">
+                Please enter your email/username and password to login
+                </p>
+            <form onSubmit={handleSubmit} className="space-y-3">
+                <input 
+                    name="identifier" 
+                    placeholder="Email or Username" 
+                    onChange={handleChange} 
+                    required 
+                    className="w-full border-b-2 px-3 py-2 border-orange-300" 
+                />
+                <input 
+                    name="password" 
+                    type="password" 
+                    placeholder="Password" 
+                    onChange={handleChange} 
+                    required 
+                    className="w-full border-b-2 px-3 py-2 border-orange-300" 
+                    />
+                    <a href="">
+                        <p className="text-orange-500 underline text-end mb-3">Forgot Password?</p>
+                    </a>
+                
+                <div className="flex items-center justify-center">
+                <button type="submit" className="w-full max-w-xs bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition">Login</button>
+                </div>
+            </form>
+
+            <p className="font-bold">or</p>
+            <button
+                    onClick={handleGoogleLogin}
+                    className="w-full max-w-xs max-h-12 bg-white text-black border border-gray-300 py-3 rounded-full font-semibold mb-4 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-3"
+                >
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+                        alt="Google Logo"
+                        className="h-5 w-5"
+                    />
+                    Continue with Google
+                </button>
+            </div>
         </div>
+    
     );
 };
 

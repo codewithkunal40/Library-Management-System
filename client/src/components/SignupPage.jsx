@@ -35,12 +35,22 @@ export default function CreateAccount() {
 
         {/* Form Card */}
         <div className="w-full max-w-2xl bg-white shadow-md rounded-lg px-6 py-8 mt-[-5rem] z-10">
-            <h2 className="text-4xl font-bold text-center text-orange-500 mb-6">
+            <h2 className="heading-signup text-4xl font-bold text-center text-orange-500 mb-6">
             <span className="text-black">Complete your</span> Profile <span className="text-black">&</span> Create Account
             </h2>
-            <p className="text-center text-gray-600 mb-4">
+            <p className="text-center text-black mb-4">
             Don’t worry, only you can see your personal data. No one else will be able to see it.
             </p>
+            <div className="flex justify-center items-center">
+                <div className="h-2 w-2 bg-gray-300 rounded-full mx-1"></div>
+                <div className="h-2 w-2 bg-gray-300 rounded-full mx-1"></div>
+                <div className="h-2 w-2 bg-gray-300 rounded-full mx-1"></div>
+                <div className="h-2 w-6 bg-orange-500 rounded-full mx-1"></div>
+            </div>
+
+            <div className="flex justify-center items-center">
+            <img src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746035428/account_circle_pyc8sx.png" alt="account image" className="w-20 mt-3 mb-3"/>
+            </div>
 
             <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
             <input
@@ -48,35 +58,35 @@ export default function CreateAccount() {
                 placeholder="Full Name"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="phone"
                 placeholder="Phone"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="dob"
                 type="date"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded text-gray-500"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="country"
                 placeholder="Country"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="username"
                 placeholder="Username"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="email"
@@ -84,7 +94,7 @@ export default function CreateAccount() {
                 placeholder="Email"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="password"
@@ -92,7 +102,7 @@ export default function CreateAccount() {
                 placeholder="Password"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <input
                 name="confirmPassword"
@@ -100,12 +110,12 @@ export default function CreateAccount() {
                 placeholder="Confirm Password"
                 onChange={handleChange}
                 required
-                className="border px-3 py-2 rounded"
+                className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
             <select
                 name="role"
                 onChange={handleChange}
-                className="md:col-span-2 border px-3 py-2 rounded"
+                className="md:col-span-2 border-b-2 px-3 py-2 border-orange-300"
             >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
