@@ -1,10 +1,18 @@
-import React from 'react'
-import WelcomePage from './components/welcomePage'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import WelcomePage from "./components/welcomePage";
+import SignupPage from "./components/SignupPage";
+import LoginPage from "./components/LoginPage";
 
-const App = () => {
+function App() {
   return (
-    <WelcomePage />
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<WelcomePage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
