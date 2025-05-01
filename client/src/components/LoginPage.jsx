@@ -33,13 +33,14 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-10">
-            <div className="relative w-full h-[34vh]">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white">
+            <div className="relative w-full h-[31vh]">
                 <img
                     src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
                     alt="Library"
                     className="w-full h-full object-cover"
                 />
+                <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none" />
             </div>
 
             <div className="w-full flex flex-col items-center px-6 py-10 bg-white">

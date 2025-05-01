@@ -8,20 +8,21 @@ const WelcomePage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-10">
-            <div className="relative w-full h-[41vh]">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white" >
+            <div className="relative w-full h-[39vh]" >
                 <img
                     src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
                     alt="Library"
                     className="w-full h-full object-cover"
                 />
+                <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none" />
             </div>
 
             <div className="w-full flex flex-col items-center px-6 py-10 bg-white">
                 <h1 className="text-5xl font-bold text-black mb-2 text-center">
                     Welcome to <span className="text-orange-500">E-Library</span>
                 </h1>
-                <p className="text-gray-600 text-center mb-6">
+                <p className="text-gray-600 text-center mb-6 text-lg">
                     The Number one ebook store and reading application in this century
                 </p>
 
@@ -33,7 +34,7 @@ const WelcomePage = () => {
                 </div>
 
                 <button
-                    onClick={() => navigate("/signup")}
+                    onClick={() => navigate("/gender-page")}
                     className="w-full max-w-xs bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition"
                 >
                     Get Started

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 function SignupPage() {
     const [formData, setFormData] = useState({
@@ -14,18 +14,17 @@ function SignupPage() {
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value })
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Submitted Data:", formData);
-    };
+        e.preventDefault()
+        console.log("Submitted Data:", formData)
+    }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-10">
-        {/* Background Image */}
-        <div className="relative w-full h-[41vh]">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white">
+        <div className="relative w-full h-[18vh]">
             <img
             src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
             alt="Library"
@@ -33,12 +32,12 @@ function SignupPage() {
             />
         </div>
 
-        {/* Form Card */}
+            {/* form */}
         <div className="w-full max-w-2xl bg-white shadow-md rounded-lg px-6 py-8 mt-[-5rem] z-10">
             <h2 className="heading-signup text-4xl font-bold text-center text-orange-500 mb-6">
             <span className="text-black">Complete your</span> Profile <span className="text-black">&</span> Create Account
             </h2>
-            <p className="text-center text-black mb-4">
+            <p className="text-center text-black mb-4 text-lg">
             Don’t worry, only you can see your personal data. No one else will be able to see it.
             </p>
             <div className="flex justify-center items-center">
@@ -49,7 +48,14 @@ function SignupPage() {
             </div>
 
             <div className="flex justify-center items-center">
-            <img src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746035428/account_circle_pyc8sx.png" alt="account image" className="w-20 mt-3 mb-3"/>
+                <img
+                    src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746035428/account_circle_pyc8sx.png"
+                    alt="account image"
+                    className="w-20 mt-5 mb-3 rounded-full"
+                    style={{
+                    boxShadow: "0 0 6px 5px rgba(255, 165, 0, 0.5)",
+                    }}
+                />
             </div>
 
             <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
