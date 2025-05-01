@@ -16,6 +16,8 @@ function SignupPage() {
         role: "user",
     };
 
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState(initialFormState);
     const [showPopup, setShowPopup] = useState(false);
 
@@ -38,8 +40,6 @@ function SignupPage() {
         alert("Error occurred while registering.");
         }
     };
-
-    const navigate = useNavigate();
 
     useEffect(() => {
     if (showPopup) {
