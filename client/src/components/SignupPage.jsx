@@ -150,6 +150,10 @@ function SignupPage() {
                 <p className="text-sm text-gray-700">
                 Your account has been created please wait for a moment while we prepare your profile.
                 </p>
+                <div className="flex justify-center mt-4">
+                <   div className="w-10 h-10 border-4 border-orange-500 border-t-transparent        rounded-full animate-spin">
+                    </div>
+                </div>
             </div>
             </div>
         )}
