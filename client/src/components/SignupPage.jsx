@@ -148,7 +148,7 @@ function SignupPage() {
                 Registration Successful!
                 </h3>
                 <p className="text-sm text-gray-700">
-                Your account has been created. You can now log in to the system.
+                Your account has been created please wait for a moment while we prepare your profile.
                 </p>
             </div>
             </div>
