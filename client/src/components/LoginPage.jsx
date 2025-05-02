@@ -80,11 +80,12 @@ const LoginPage = () => {
                 required
                 className="w-full border-b-2 px-3 py-2 border-orange-300"
             />
-            <a href="#">
-                <p className="text-orange-500 underline text-end mb-3">
-                Forgot Password?
-                </p>
-            </a>
+            <p
+            onClick={() => navigate("/forget-password")}
+            className="text-orange-500 underline text-end mb-3 cursor-pointer"
+            >
+            Forgot Password?
+            </p>
 
             <div className="flex items-center justify-center">
                 <button
