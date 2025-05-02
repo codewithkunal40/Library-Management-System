@@ -46,7 +46,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white animate-fadeIn">
         <div className="relative w-full h-[31vh]">
             <img
             src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"

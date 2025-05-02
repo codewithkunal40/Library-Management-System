@@ -18,13 +18,14 @@ import { useNavigate } from "react-router-dom";
 
     if (showSplash) {
         return (
-        <div className="min-h-screen flex items-center justify-center bg-white animate-fadeIn">
-            <img
-            src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746175887/Group_5_rrhzxx.png"
-            alt="Splash"
-            className="w-3/4 max-w-md"
-            />
-        </div>
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white animate-fadeIn">
+                <img
+                src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746200403/ebook_logo_1_dtzq3j.png"
+                alt="Splash"
+                className="w-3/4 max-w-xs mb-4"
+                />
+                <h1 className="text-5xl font-bold text-orange-500">LMS</h1>
+            </div>
         );
     }
 

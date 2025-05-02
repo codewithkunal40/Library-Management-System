@@ -8,7 +8,7 @@ const UserDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center animate-fadeIn">
       <h1 className="text-3xl font-bold mb-6">Welcome to User Dashboard</h1>
       <button
         onClick={handleLogout}
