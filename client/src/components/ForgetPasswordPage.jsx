@@ -15,8 +15,8 @@ function ForgetPasswordPage() {
         email,
       });
 
-      toast.success(res.data.msg); // Shows "OTP sent to email"
-      navigate("/verify-otp", { state: { email } }); // Pass email to next page
+      toast.success(res.data.msg); 
+      navigate("/verify-otp", { state: { email } });
     } catch (err) {
       toast.error(err.response?.data?.msg || "Something went wrong");
     }
