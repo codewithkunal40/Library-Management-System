@@ -54,7 +54,7 @@ function ForgetPasswordPage() {
           <div className="flex items-center justify-center mt-5">
             <button
               type="submit"
-              className="w-full bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition"
+              className="w-full bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition cursor-pointer"
             >
               Get OTP
             </button>
