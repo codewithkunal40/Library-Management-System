@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
 import passport from "passport";
-import cookieSession from "cookie-session";
+import session from "express-session";
+
 import configurePassport from './passport.js';
 
 dotenv.config();
@@ -15,12 +16,16 @@ configurePassport();
 
 
 app.use(
-  cookieSession({
-    name:"session",
-    keys:["cyberwolve"],
-    maxAge:24*60*60*100,
+  session({
+    secret: "cyberwolve",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    },
   })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -42,7 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/auth", authRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server Running on port ${PORT}`);

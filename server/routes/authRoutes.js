@@ -34,13 +34,17 @@ router.get("/login/failed", (req, res) => {
 
 router.get(
   "/google/callback",
+  (req, res, next) => {
+    console.log("Callback route hit"); // <-- Add this
+    next();
+  },
   passport.authenticate("google", {
     successRedirect: process.env.CLIENT_URL,
-    failureRedirect: "/login/failed",
+    failureRedirect: "/api/auth/login/failed",
   })
 );
 
-router.get("/google", passport.authenticate("google", ["profile", "email"]));
+router.get("/google", passport.authenticate("google", ['profile', 'email']));
 router.get("/logout", (req, res) => {
   req.logout();
   res.redirect(process.env.CLIENT_URL);
