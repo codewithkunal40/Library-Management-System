@@ -35,7 +35,7 @@ router.get("/login/failed", (req, res) => {
 router.get(
   "/google/callback",
   (req, res, next) => {
-    console.log("Callback route hit"); // <-- Add this
+    console.log("Callback route hit"); 
     next();
   },
   passport.authenticate("google", {
