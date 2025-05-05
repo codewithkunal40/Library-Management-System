@@ -1,23 +1,35 @@
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const UserDashboard = () => {
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) navigate("/"); 
+    else setUser(storedUser);
+  }, [navigate]);
+
   const handleLogout = () => {
-    navigate("/");
+    localStorage.removeItem("user"); 
+    navigate("/"); 
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center animate-fadeIn">
-      <h1 className="text-3xl font-bold mb-6">Welcome to User Dashboard</h1>
+  return user ? (
+    <div className="p-4">
+      <h1 className="text-xl font-bold">Welcome, {user.displayName}</h1>
+      <img src={user.photoURL} alt="Profile" className="w-20 h-20 rounded-full mt-2" />
+      <p>Email: {user.email}</p>
+
       <button
         onClick={handleLogout}
-        className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full transition"
+        className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
       >
         Logout
       </button>
     </div>
-  );
+  ) : null;
 };
 
 export default UserDashboard;

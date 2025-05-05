@@ -4,32 +4,9 @@ import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import cors from "cors";
-import passport from "passport";
-import session from "express-session";
-
-import configurePassport from './passport.js';
 
 dotenv.config();
 const app = express();
-
-configurePassport();
-
-
-app.use(
-  session({
-    secret: "cyberwolve",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    },
-  })
-);
-
-
-app.use(passport.initialize());
-app.use(passport.session());
-
 
 app.use(
   cors({
@@ -38,7 +15,6 @@ app.use(
     credentials: true,
   })
 );
-
 
 // Middlewares
 app.use(cookieParser());
