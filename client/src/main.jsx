@@ -17,7 +17,7 @@ createRoot(document.getElementById('root')).render(
       closeOnClick
       pauseOnHover
       draggable
-      theme="light"
+      theme="colored"
     />
   </StrictMode>,
 )
