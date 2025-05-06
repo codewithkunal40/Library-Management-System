@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { auth, provider } from "./firebase.js";
 import { signInWithPopup } from "firebase/auth";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -20,6 +21,7 @@ const LoginPage = () => {
             navigate("/user-dashboard");
         } catch (error) {
             console.error("Google Sign-In Error", error);
+            toast.error(error)
         }
     };
 
@@ -49,10 +51,10 @@ const LoginPage = () => {
                     navigate("/user-dashboard");
                 }
             } else {
-                alert(data.msg || "Login failed");
+                toast.error(data.msg || "Login failed");
             }
         } catch (error) {
-            alert("Login error: " + error.message);
+            toast.error("Login error: " + error.message);
         }
     };
 

@@ -6,20 +6,23 @@ import { toast } from "react-toastify";
 
 function ForgetPasswordPage() {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/auth/forgot-password", {
-        email,
-      });
-
-      toast.success(res.data.msg); 
+      const res = await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
+      toast.success(res.data.msg);
       navigate("/verify-otp", { state: { email } });
     } catch (err) {
       toast.error(err.response?.data?.msg || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
+
   };
 
   return (
@@ -53,11 +56,13 @@ function ForgetPasswordPage() {
           />
           <div className="flex items-center justify-center mt-5">
             <button
-              type="submit"
-              className="w-full bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition cursor-pointer"
-            >
-              Get OTP
-            </button>
+            type="submit"
+            className="w-full bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition cursor-pointer disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? "Sending..." : "Get OTP"}
+          </button>
+
           </div>
         </form>
       </div>

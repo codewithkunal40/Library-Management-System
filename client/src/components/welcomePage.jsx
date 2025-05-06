@@ -68,7 +68,7 @@ const WelcomePage = () => {
 
         <button
           onClick={() => navigate("/gender-page")}
-          className="w-full max-w-xs bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition"
+          className="w-full max-w-xs bg-orange-500 text-white py-3 rounded-full font-semibold mb-4 hover:bg-orange-600 transition cursor-pointer"
         >
           Get Started
         </button>
@@ -84,7 +84,7 @@ const WelcomePage = () => {
 
         <button
           onClick={handleGoogleLogin}
-          className="w-full max-w-xs max-h-12 bg-white text-black border border-gray-300 py-3 rounded-full font-semibold mb-4 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-3"
+          className="w-full max-w-xs max-h-12 bg-white text-black border border-gray-300 py-3 rounded-full font-semibold mb-4 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-3 cursor-pointer"
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"

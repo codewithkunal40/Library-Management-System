@@ -96,7 +96,7 @@ function VerifyOtpPage() {
 
                     <button
                         type="submit"
-                        className="w-40 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full"
+                        className="w-40 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full cursor-pointer"
                     >
                         Confirm
                     </button>
@@ -125,7 +125,7 @@ function VerifyOtpPage() {
                 <p className="text-md font-semibold">Your password has been successfully changed</p>
                 <button
                     onClick={() => navigate("/login")}
-                    className="mt-4 px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full"
+                    className="mt-4 px-5 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-full cursor-pointer"
                 >
                     Go to Login Page
                 </button>

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function SignupPage() {
     const initialFormState = {
@@ -37,7 +38,8 @@ function SignupPage() {
         setShowPopup(true);
         } catch (error) {
         console.error("Signup failed:", error.response?.data || error.message);
-        alert("Error occurred while registering.");
+        toast.error(error.response?.data || error.message)
+        toast.error("Error occurred while registering.");
         }
     };
 
