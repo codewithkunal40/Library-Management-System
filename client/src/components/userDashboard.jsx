@@ -19,7 +19,7 @@ const UserDashboard = () => {
   const displayName =
     user?.displayName || user?.name || user?.username || "User";
   const profileImage =
-    user?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // default avatar
+    user?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png"; 
 
   return user ? (
     <div className="flex h-screen">
@@ -36,6 +36,19 @@ const UserDashboard = () => {
               Email: {user.email}
             </p>
           </div>
+
+          <nav>
+            <ul>
+              <li className="mb-2">
+                <a
+                  href="/view-books"
+                  className="block px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 text-center"
+                >
+                  Get Books
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         <button

@@ -11,5 +11,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ["user", "admin"], default: "user" },
 });
 
-const User = mongoose.model("User", userSchema);
+// ✅ Prevent OverwriteModelError by checking if it already exists
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
 export default User;

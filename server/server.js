@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import bookRoutes from './routes/bookRoutes.js';
 import cors from "cors";
 
 dotenv.config();
@@ -22,7 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes); // user and admin
+app.use('/api/books', bookRoutes); // books
 
 const PORT = process.env.PORT || 3000;
 
