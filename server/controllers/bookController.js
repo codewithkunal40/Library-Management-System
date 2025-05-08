@@ -1,16 +1,18 @@
 import Book from "../models/bookModel.js";
 
-//only admin can add books
+//  admin can add books
 export const addBook = async (req, res) => {
   try {
-    const { title, author, isbn, genre, quantity, description } = req.body;
+    const { title, author, isbn, genre, quantity, description, price } = req.body;
 
-    if (!title || !author || !isbn) {
+    // Basic required fields validation
+    if (!title || !author || !isbn || price === undefined) {
       return res
         .status(400)
-        .json({ message: "Title, author, and ISBN are required" });
+        .json({ message: "Title, author, ISBN, and price are required" });
     }
 
+    //  duplicate ISBN
     const existingBook = await Book.findOne({ isbn });
     if (existingBook) {
       return res
@@ -18,6 +20,7 @@ export const addBook = async (req, res) => {
         .json({ message: "Book with this ISBN already exists" });
     }
 
+    // Create the book
     const book = await Book.create({
       title,
       author,
@@ -25,6 +28,7 @@ export const addBook = async (req, res) => {
       genre,
       quantity,
       description,
+      price,
       addedBy: req.user._id,
     });
 
@@ -34,6 +38,7 @@ export const addBook = async (req, res) => {
   }
 };
 
+// Get all books
 export const getAllBooks = async (req, res) => {
   try {
     const books = await Book.find().sort({ createdAt: -1 });
