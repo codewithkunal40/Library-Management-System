@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
@@ -43,12 +44,9 @@ const AdminDashboard = () => {
           <nav>
             <ul>
               <li className="mb-2">
-                <a
-                  href="/add-book"
-                  className="block px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-                >
-                  Add Book
-                </a>
+                <Link to='/add-books' className="block px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">
+                  Add Books
+                </Link>
               </li>
             </ul>
           </nav>

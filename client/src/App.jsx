@@ -8,6 +8,7 @@ import UserDashboard from "./components/userDashboard";
 import AdminDashboard from "./components/adminDashboard";
 import ForgetPasswordPage from "./components/ForgetPasswordPage";
 import VerifyOtpPage from "./components/VerifyOtpPage";
+import AddBookForm from "./components/AddBooks/AddBookForm";
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="/age-page" element={<AgePage />} />
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
+        <Route path="/add-books" element={<AddBookForm />} />
 
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />

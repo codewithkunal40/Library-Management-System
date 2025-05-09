@@ -43,7 +43,8 @@ const LoginPage = () => {
             const data = await res.json();
 
             if (data.token && data.user) {
-                localStorage.setItem("user", JSON.stringify(data.user)); // ✅ store user in localStorage
+                localStorage.setItem("user", JSON.stringify(data.user)); // store user in localStorage
+                localStorage.setItem("token", data?.token); // store token in localStorage
 
                 if (data.user.role === "admin") {
                     navigate("/admin-dashboard");
@@ -124,7 +125,7 @@ const LoginPage = () => {
                 </button>
             </div>
         </div>
-    );
-};
+    )
+}
 
 export default LoginPage;
