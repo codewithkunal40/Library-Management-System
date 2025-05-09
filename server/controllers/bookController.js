@@ -1,18 +1,28 @@
 import Book from "../models/bookModel.js";
+import path from "path";
 
-//  admin can add books
+// Admin can add a book with cover image
 export const addBook = async (req, res) => {
   try {
-    const { title, author, isbn, genre, quantity, description, price } = req.body;
+    const { title, author, isbn, genre, quantity, description, price } =
+      req.body;
 
-    // Basic required fields validation
-    if (!title || !author || !isbn || price === undefined) {
+    //  if ISBN is provided
+    if (!isbn) {
+      return res.status(400).json({ message: "ISBN is required" });
+    }
+
+    const isbnRegex = /^(97(8|9))?\d{9}(\d|X)$/;
+    if (!isbnRegex.test(isbn)) {
+      return res.status(400).json({ message: "Invalid ISBN format" });
+    }
+
+    if (!title || !author || price === undefined) {
       return res
         .status(400)
         .json({ message: "Title, author, ISBN, and price are required" });
     }
 
-    //  duplicate ISBN
     const existingBook = await Book.findOne({ isbn });
     if (existingBook) {
       return res
@@ -20,7 +30,11 @@ export const addBook = async (req, res) => {
         .json({ message: "Book with this ISBN already exists" });
     }
 
-    // Create the book
+    let coverImagePath = "";
+    if (req.file) {
+      coverImagePath = path.join("uploads", "books", req.file.filename);
+    }
+
     const book = await Book.create({
       title,
       author,
@@ -29,11 +43,13 @@ export const addBook = async (req, res) => {
       quantity,
       description,
       price,
+      coverImage: coverImagePath,
       addedBy: req.user._id,
     });
 
     res.status(201).json(book);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
