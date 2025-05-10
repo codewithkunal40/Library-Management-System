@@ -117,21 +117,36 @@ const AddBookForm = () => {
           </div>
 
           <div className="mt-4">
+            <label className="block font-semibold mb-1">Description</label>
+            <textarea
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              rows={3}
+              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            ></textarea>
+          </div>
+
+          <div className="mt-4">
             <label
-              htmlFor="coverImage"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Cover Image
-            </label>
+    htmlFor="coverImage"
+    className="block mb-2 text-sm font-medium text-gray-700"
+  >
+    Cover Image
+  </label>
             <input
-              type="file"
               id="coverImage"
+              type="file"
               name="coverImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
-                        file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer transition"
-              />
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100
+                cursor-pointer transition"
+            />
           </div>
 
           <button
