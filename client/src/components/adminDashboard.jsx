@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AddBooks from "./AddBooks/AddBookForm"; 
+import AddBooks from "./AddBooks/AddBookForm";
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
@@ -23,7 +23,6 @@ const AdminDashboard = () => {
   const profileImage =
     admin?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  
   const renderMainContent = () => {
     switch (selectedSection) {
       case "add-books":
@@ -31,73 +30,69 @@ const AdminDashboard = () => {
       case "dashboard":
       default:
         return (
-          <>
-            <h1 className="text-2xl font-bold text-center">Admin Dashboard</h1>
-            <p className="mt-2 font-bold text-gray-700">
-              Welcome to your dashboard, {displayName}!
+          <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+              Admin Dashboard
+            </h1>
+            <p className="text-lg font-medium text-gray-600 text-center">
+              Welcome back, {displayName}! Use the sidebar to manage books.
             </p>
-          </>
+          </div>
         );
     }
   };
 
   return admin ? (
-    <div className="flex h-screen">
-      <aside className="w-full sm:w-64 bg-gray-800 text-white flex flex-col justify-between p-4">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-orange-100 to-orange-300">
+      <aside className="w-full md:w-72 bg-white text-gray-800 shadow-xl p-6 md:rounded-tr-3xl md:rounded-br-3xl flex flex-col justify-between">
         <div>
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-8">
             <img
               src={profileImage}
-              alt="Profile"
-              className="w-24 h-24 rounded-full mb-2 object-cover"
+              alt="Admin Profile"
+              className="w-24 h-24 rounded-full border-4 border-orange-300 object-cover"
             />
-            <h2 className="text-lg font-semibold text-center">{displayName}</h2>
-            <p className="text-sm text-gray-300 font-bold text-center">
+            <h2 className="mt-3 text-xl font-bold">{displayName}</h2>
+            <p className="text-sm text-gray-500 mt-1 font-semibold">
               Email: {admin.email}
             </p>
-            <p className="text-sm text-gray-300 font-bold text-center">
-              Role: Admin
-            </p>
+            <p className="text-sm text-gray-500 font-semibold">Role: Admin</p>
           </div>
 
-          <nav>
-            <ul>
-              <li className="mb-2">
-                <button
-                  onClick={() => setSelectedSection("dashboard")}
-                  className={`block w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 ${
-                    selectedSection === "dashboard" ? "bg-gray-600" : ""
-                  }`}
-                >
-                  Home
-                </button>
-              </li>
-              <li className="mb-2">
-                <button
-                  onClick={() => setSelectedSection("add-books")}
-                  className={`block w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 ${
-                    selectedSection === "add-books" ? "bg-gray-600" : ""
-                  }`}
-                >
-                  Add Books
-                </button>
-              </li>
-              
-            </ul>
+          <nav className="space-y-2">
+            <button
+              onClick={() => setSelectedSection("dashboard")}
+              className={`w-full py-2 px-4 rounded-lg text-left font-semibold transition duration-200 ${
+                selectedSection === "dashboard"
+                  ? "bg-orange-500 text-white"
+                  : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+              }`}
+            >
+              Home
+            </button>
+
+            <button
+              onClick={() => setSelectedSection("add-books")}
+              className={`w-full py-2 px-4 rounded-lg text-left font-semibold transition duration-200 ${
+                selectedSection === "add-books"
+                  ? "bg-orange-500 text-white"
+                  : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+              }`}
+            >
+              Add Books
+            </button>
           </nav>
         </div>
 
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white py-2 rounded text-center mt-4"
+          className="w-full mt-6 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition duration-200"
         >
           Logout
         </button>
       </aside>
 
-      <main className="flex-1 p-6 bg-gray-100">
-        {renderMainContent()}
-      </main>
+      <main className="flex-1 p-6 overflow-y-auto">{renderMainContent()}</main>
     </div>
   ) : null;
 };
