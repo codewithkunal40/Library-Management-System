@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import AddBooks from "./AddBooks/AddBookForm"; 
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
+  const [selectedSection, setSelectedSection] = useState("dashboard");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +22,24 @@ const AdminDashboard = () => {
     admin?.displayName || admin?.name || admin?.username || "Admin";
   const profileImage =
     admin?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+  
+  const renderMainContent = () => {
+    switch (selectedSection) {
+      case "add-books":
+        return <AddBooks />;
+      case "dashboard":
+      default:
+        return (
+          <>
+            <h1 className="text-2xl font-bold text-center">Admin Dashboard</h1>
+            <p className="mt-2 font-bold text-gray-700">
+              Welcome to your dashboard, {displayName}!
+            </p>
+          </>
+        );
+    }
+  };
 
   return admin ? (
     <div className="flex h-screen">
@@ -44,10 +63,26 @@ const AdminDashboard = () => {
           <nav>
             <ul>
               <li className="mb-2">
-                <Link to='/add-books' className="block px-4 py-2 bg-gray-700 rounded hover:bg-gray-600">
-                  Add Books
-                </Link>
+                <button
+                  onClick={() => setSelectedSection("dashboard")}
+                  className={`block w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 ${
+                    selectedSection === "dashboard" ? "bg-gray-600" : ""
+                  }`}
+                >
+                  Dashboard Home
+                </button>
               </li>
+              <li className="mb-2">
+                <button
+                  onClick={() => setSelectedSection("add-books")}
+                  className={`block w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 ${
+                    selectedSection === "add-books" ? "bg-gray-600" : ""
+                  }`}
+                >
+                  Add Books
+                </button>
+              </li>
+              
             </ul>
           </nav>
         </div>
@@ -61,10 +96,7 @@ const AdminDashboard = () => {
       </aside>
 
       <main className="flex-1 p-6 bg-gray-100">
-        <h1 className="text-2xl font-bold text-center">Admin Dashboard</h1>
-        <p className="mt-2 font-bold text-gray-700">
-          Welcome to your dashboard, {displayName}!
-        </p>
+        {renderMainContent()}
       </main>
     </div>
   ) : null;
