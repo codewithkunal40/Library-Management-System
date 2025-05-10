@@ -1,11 +1,16 @@
 import express from "express";
-import { addBook, getAllBooks } from "../controllers/bookController.js";
+import {
+  addBook,
+  getAllBooks,
+  updateBook,
+  deleteBook,
+} from "../controllers/bookController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadBookImage.js";
 
 const router = express.Router();
 
-// admin add book
+// only admin can Add Book
 router.post(
   "/add-book",
   protect,
@@ -14,7 +19,19 @@ router.post(
   addBook
 );
 
-// user and admin both can view books
+//  Admin and user both can view all Books
 router.get("/get-book", protect, getAllBooks);
+
+// admin can update Book
+router.put(
+  "/update-book/:id",
+  protect,
+  isAdmin,
+  upload.single("coverImage"),
+  updateBook
+);
+
+// admin can delete Book
+router.delete("/delete-book/:id", protect, isAdmin, deleteBook);
 
 export default router;

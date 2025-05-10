@@ -69,7 +69,7 @@ const AdminDashboard = () => {
                     selectedSection === "dashboard" ? "bg-gray-600" : ""
                   }`}
                 >
-                  Dashboard Home
+                  Home
                 </button>
               </li>
               <li className="mb-2">
