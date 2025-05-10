@@ -129,11 +129,11 @@ const AddBookForm = () => {
 
           <div className="mt-4">
             <label
-    htmlFor="coverImage"
-    className="block mb-2 text-sm font-medium text-gray-700"
-  >
-    Cover Image
-  </label>
+            htmlFor="coverImage"
+            className="block mb-2 text-sm font-medium text-gray-700"
+          >
+            Cover Image
+          </label>
             <input
               id="coverImage"
               type="file"
