@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBooks from "./AddBooks/AddBookForm";
+import ViewBooks from "./ViewBooks/ViewBooks";
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
@@ -25,6 +26,8 @@ const AdminDashboard = () => {
 
   const renderMainContent = () => {
     switch (selectedSection) {
+      case "view-books":
+        return <ViewBooks />;
       case "add-books":
         return <AddBooks />;
       case "dashboard":
@@ -80,6 +83,16 @@ const AdminDashboard = () => {
               }`}
             >
               Add Books
+            </button>
+            <button
+              onClick={() => setSelectedSection("view-books")}
+              className={`w-full py-2 px-4 rounded-lg text-left font-semibold transition duration-200 ${
+                selectedSection === "view-books"
+                  ? "bg-orange-500 text-white"
+                  : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+              }`}
+            >
+              View Books
             </button>
           </nav>
         </div>
