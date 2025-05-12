@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import React, { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 
 function SignupPage() {
@@ -26,22 +25,34 @@ function SignupPage() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+        const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        const res = await axios.post(
-            "http://localhost:3000/api/auth/signup",
-            formData
-        );
-        console.log("Submitted:", res.data);
-        setFormData(initialFormState);
-        setShowPopup(true);
+            const res = await fetch("http://localhost:3000/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            // Handle non-2xx responses
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Signup failed");
+            }
+
+            const data = await res.json();
+            console.log("Submitted:", data);
+            setFormData(initialFormState);
+            setShowPopup(true);
         } catch (error) {
-        console.error("Signup failed:", error.response?.data || error.message);
-        toast.error(error.response?.data || error.message)
-        toast.error("Error occurred while registering.");
+            console.error("Signup failed:", error.message);
+            toast.error(error.message);
+            toast.error("Error occurred while registering.");
         }
     };
+
 
     useEffect(() => {
     if (showPopup) {
