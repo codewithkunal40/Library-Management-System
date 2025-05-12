@@ -37,11 +37,10 @@ const AddBookForm = () => {
     const res = await fetch("http://localhost:3000/api/books/add-book", {
       method: "POST",
       headers: {
-        // Do NOT set Content-Type header for FormData; browser will set it with the correct boundary
         Authorization: `Bearer ${token}`,
       },
       body: formData,
-      credentials: "include", // Equivalent to axios's withCredentials: true
+      credentials: "include",
     });
 
     const data = await res.json();
