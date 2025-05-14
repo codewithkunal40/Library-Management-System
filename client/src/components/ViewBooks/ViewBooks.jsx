@@ -43,7 +43,7 @@ const ViewBooks = () => {
 
     return (
         <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6 text-center text-blue-800">All Books</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">All Books</h1>
         {books.length === 0 ? (
             <p className="text-center text-gray-600 font-medium">No books available.</p>
         ) : (

@@ -5,12 +5,14 @@ import {
   sendOtp,
   resetPassword,
 } from "../controllers/authController.js";
+import uploadProfilePic from "../middleware/uploadProfilePic.js";
 
 const router = express.Router();
 
-router.post("/signup", register);
+router.post("/signup", uploadProfilePic.single("profilePic"), register);
 router.post("/login", login);
 router.post("/forgot-password", sendOtp);
 router.post("/reset-password", resetPassword);
+
 
 export default router;

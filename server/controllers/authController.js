@@ -19,7 +19,6 @@ export const register = async (req, res) => {
       email,
       password,
       confirmPassword,
-      role,
     } = req.body;
 
     if (password !== confirmPassword)
@@ -28,10 +27,14 @@ export const register = async (req, res) => {
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
+
     if (existingUser)
       return res.status(400).json({ msg: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    const profilePic = req.file ? req.file.filename : "";
+
 
     const user = await User.create({
       fullName,
@@ -41,7 +44,8 @@ export const register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      role,
+      role: "user",
+      profilePic,
     });
 
     res.status(201).json({ msg: "Registered Successfully" });
@@ -72,6 +76,7 @@ export const login = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        profilePic: user.profilePic,
       },
     });
   } catch (error) {
@@ -79,6 +84,7 @@ export const login = async (req, res) => {
   }
 };
 
+// Send OTP
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -97,6 +103,7 @@ export const sendOtp = async (req, res) => {
   }
 };
 
+//  Reset Password
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;

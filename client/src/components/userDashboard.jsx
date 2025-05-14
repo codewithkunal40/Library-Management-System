@@ -20,9 +20,11 @@ const UserDashboard = () => {
 
   const displayName =
     user?.displayName || user?.name || user?.username || "User";
-  const profileImage =
-    user?.photoURL ||
-    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+ const profileImage = user?.profilePic
+  ? `http://localhost:3000/uploads/profiles/${user.profilePic}`
+  : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
 
   const renderMainContent = () => {
     switch (selectedSection) {
@@ -45,7 +47,6 @@ const UserDashboard = () => {
 
   return user ? (
     <div className="min-h-screen flex flex-col md:flex-row bg-gradient-to-br from-orange-100 to-orange-300">
-
       <aside className="w-full md:w-72 bg-white text-gray-800 shadow-xl p-6 md:rounded-tr-3xl md:rounded-br-3xl flex flex-col justify-between">
         <div>
           <div className="flex flex-col items-center mb-6">
@@ -55,8 +56,8 @@ const UserDashboard = () => {
               className="w-24 h-24 rounded-full border-4 border-white shadow mb-2 object-cover"
             />
             <h2 className="text-xl font-bold text-center">{displayName}</h2>
-            <p className="text-sm text-gray-300 text-center">
-              {user.email}
+            <p className="text-sm text-gray-500 text-center">
+              {user?.email}
             </p>
           </div>
 
@@ -92,7 +93,7 @@ const UserDashboard = () => {
 
         <button
           onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition duration-200"
+          className="bg-orange-500 hover:bg-orange-400 text-white font-semibold py-2 rounded-lg transition duration-200"
         >
           Logout
         </button>

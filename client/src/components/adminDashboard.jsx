@@ -99,7 +99,7 @@ const AdminDashboard = () => {
 
         <button
           onClick={handleLogout}
-          className="w-full mt-6 py-2 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg transition duration-200"
+          className="w-full mt-6 py-2 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg transition duration-200"
         >
           Logout
         </button>

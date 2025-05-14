@@ -9,9 +9,12 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   role: { type: String, enum: ["user", "admin"], default: "user" },
+  profilePic: {
+    type: String,
+    default: "",
+  },
 });
 
-// ✅ Prevent OverwriteModelError by checking if it already exists
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
