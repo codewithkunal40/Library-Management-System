@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -31,25 +30,39 @@ function VerifyOtpPage() {
     };
 
     const handleVerify = async (e) => {
-        e.preventDefault();
-        const fullOtp = otp.join("");
-        if (fullOtp.length !== 6 || newPassword.length < 6) {
-            toast.error("Enter 6-digit OTP and a valid new password");
-            return;
-        }
+    e.preventDefault();
+    const fullOtp = otp.join("");
+    if (fullOtp.length !== 6 || newPassword.length < 6) {
+        toast.error("Enter 6-digit OTP and a valid new password");
+        return;
+    }
 
-        try {
-            const res = await axios.post("http://localhost:3000/api/auth/reset-password", {
+    try {
+        const res = await fetch("http://localhost:3000/api/auth/reset-password", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
                 email,
                 otp: fullOtp,
                 newPassword,
-            });
-            toast.success(res.data.msg || "Password updated successfully");
-            setShowPopup(true);
-        } catch (err) {
-            toast.error(err.response?.data?.msg || "Failed to verify OTP");
+            }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.msg || "Failed to verify OTP");
         }
-    };
+
+        toast.success(data.msg || "Password updated successfully");
+        setShowPopup(true);
+    } catch (err) {
+        toast.error(err.message || "Failed to verify OTP");
+    }
+};
+
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-16 animate-fadeIn">

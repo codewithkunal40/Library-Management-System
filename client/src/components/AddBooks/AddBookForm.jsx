@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const AddBookForm = () => {
   const [form, setForm] = useState({
@@ -25,43 +24,49 @@ const AddBookForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      Object.entries(form).forEach(([key, value]) =>
-        formData.append(key, value)
-      );
-      if (coverImage) formData.append("coverImage", coverImage);
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, value]) =>
+      formData.append(key, value)
+    );
+    if (coverImage) formData.append("coverImage", coverImage);
 
-      const token = localStorage.getItem("token");
-      await axios.post("http://localhost:3000/api/books/add-book", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+    const token = localStorage.getItem("token");
+    const res = await fetch("http://localhost:3000/api/books/add-book", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+      credentials: "include",
+    });
 
-      toast.success("Book added successfully!");
-      setForm({
-        title: "",
-        author: "",
-        isbn: "",
-        genre: "",
-        quantity: 1,
-        description: "",
-        price: "",
-      });
-      setCoverImage(null);
-    } catch (err) {
-      toast.error(
-        err.response?.data?.message || "Failed to add book. Please try again."
-      );
-    } finally {
-      setLoading(false);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to add book. Please try again.");
     }
-  };
+
+    toast.success("Book added successfully!");
+    setForm({
+      title: "",
+      author: "",
+      isbn: "",
+      genre: "",
+      quantity: 1,
+      description: "",
+      price: "",
+    });
+    setCoverImage(null);
+  } catch (err) {
+    toast.error(err.message || "Failed to add book. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="bg-gradient-to-br from-orange-100 to-orange-300 p-5 flex justify-center">
