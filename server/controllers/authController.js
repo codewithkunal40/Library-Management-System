@@ -8,39 +8,68 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
+// === REGISTER ===
 export const register = async (req, res) => {
   try {
     const {
       fullName,
       phone,
       dob,
-      country,
+      city,
       username,
       email,
       password,
       confirmPassword,
     } = req.body;
 
-    if (password !== confirmPassword)
-      return res.status(400).json({ msg: "Passwords don't match" });
+    // === Form Validations ===
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const phoneRegex = /^\d{10}$/;
+
+    if (!nameRegex.test(fullName)) {
+      return res.status(400).json({ msg: "Full name must contain only letters and spaces." });
+    }
+
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({ msg: "Phone number must be exactly 10 digits." });
+    }
+
+    if (!dob || isNaN(Date.parse(dob))) {
+      return res.status(400).json({ msg: "Invalid date of birth." });
+    }
+
+    if (!username || username.length < 3) {
+      return res.status(400).json({ msg: "Username must be at least 3 characters long." });
+    }
+
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ msg: "Invalid email address." });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ msg: "Password must be at least 6 characters long." });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ msg: "Passwords don't match." });
+    }
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
 
-    if (existingUser)
-      return res.status(400).json({ msg: "User already exists" });
+    if (existingUser) {
+      return res.status(400).json({ msg: "User with this email or username already exists." });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
     const profilePic = req.file ? req.file.filename : "";
-
 
     const user = await User.create({
       fullName,
       phone,
       dob,
-      country,
+      city,
       username,
       email,
       password: hashedPassword,
@@ -54,6 +83,7 @@ export const register = async (req, res) => {
   }
 };
 
+// === LOGIN ===
 export const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -84,7 +114,7 @@ export const login = async (req, res) => {
   }
 };
 
-// Send OTP
+// === SEND OTP ===
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -103,7 +133,7 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-//  Reset Password
+// === RESET PASSWORD ===
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
