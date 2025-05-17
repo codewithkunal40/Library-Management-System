@@ -8,8 +8,8 @@ const AgePage = () => {
     const ageOptions = ['14-17', '18-24', '25-29', '30-34', '35-49', '>50'];
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-30 animate-fadeIn">
-        <div className="w-full h-[35vh] relative">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-40 animate-fadeIn">
+        <div className="w-full h-[45vh] relative">
             <img
             src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
             alt="Background"
