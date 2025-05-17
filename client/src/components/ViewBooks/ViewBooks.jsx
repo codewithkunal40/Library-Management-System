@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FaEdit } from "react-icons/fa";
 
 const ViewBooks = () => {
   const [books, setBooks] = useState([]);
@@ -121,6 +122,7 @@ const ViewBooks = () => {
                   Added on: {new Date(book.createdAt).toLocaleString()}
                 </p>
               </div>
+              
 
               <button
                 onClick={() => handleDelete(book._id)}
