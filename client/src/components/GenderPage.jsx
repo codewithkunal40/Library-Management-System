@@ -6,7 +6,7 @@ const GenderPage = () => {
     const [selectedGender, setSelectedGender] = useState("male");
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-10 animate-fadeIn">
+        <div className="min-h-screen flex flex-col items-center justify-between bg-white pb-30 animate-fadeIn">
             <div className="relative w-full h-[45vh]">
                 <img
                     src="https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png"
