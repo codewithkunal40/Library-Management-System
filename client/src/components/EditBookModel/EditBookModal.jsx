@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
     const [formData, setFormData] = useState({
@@ -63,14 +64,19 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
         onClose();
         } catch (err) {
         setError(err.message);
+        toast.error(err.message)
         } finally {
         setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs" style={{ pointerEvents: "none" }}>
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative"
+        style={{
+            pointerEvents: "auto",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.12)",
+        }} >
             <button
             onClick={onClose}
             className="absolute top-2 right-3 text-gray-500 text-xl"

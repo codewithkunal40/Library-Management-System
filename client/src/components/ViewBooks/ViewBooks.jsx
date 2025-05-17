@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import EditBookModal from "../EditBookModel/EditBookModal";
+import DeletePopup from "./DeletePopup";
+import { toast } from "react-toastify";
 
 const ViewBooks = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState("");
   const [editBook, setEditBook] = useState(null);
+  const [deleteBook, setDeleteBook] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        setError("Unauthorized. Please login.");
+        toast.error("Unauthorized. Please login.");
         return;
       }
       try {
@@ -32,25 +35,27 @@ const ViewBooks = () => {
         setBooks(data);
       } catch (err) {
         setError(err.message);
+        toast.error(err.message)
       }
     };
 
     fetchBooks();
   }, []);
 
-  const handleDelete = async (bookId) => {
+  const handleDelete = (book) => {
+    setDeleteBook(book);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteBook) return;
     const token = localStorage.getItem("token");
     if (!token) {
-      setError("Unauthorized. Please login.");
+      toast.error("Unauthorized. Please login.");
       return;
     }
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this book?"
-    );
-    if (!confirmDelete) return;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/books/delete-book/${bookId}`,
+        `http://localhost:3000/api/books/delete-book/${deleteBook._id}`,
         {
           method: "DELETE",
           headers: {
@@ -62,9 +67,11 @@ const ViewBooks = () => {
       if (!response.ok) {
         throw new Error("Failed to delete book.");
       }
-      setBooks(books.filter((book) => book._id !== bookId));
+      setBooks(books.filter((book) => book._id !== deleteBook._id));
+      setDeleteBook(null);
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
+      setDeleteBook(null);
     }
   };
 
@@ -137,7 +144,7 @@ const ViewBooks = () => {
                   <FaEdit size={18} />
                 </button>
                 <button
-                  onClick={() => handleDelete(book._id)}
+                  onClick={() => handleDelete(book)}
                   className="text-orange-500 hover:text-orange-700 transition"
                   title="Delete Book"
                 >
@@ -156,6 +163,12 @@ const ViewBooks = () => {
           onSave={handleSave}
         />
       )}
+      <DeletePopup
+        isOpen={!!deleteBook}
+        onClose={() => setDeleteBook(null)}
+        onConfirm={confirmDelete}
+        bookTitle={deleteBook?.title}
+      />
     </div>
   );
 };
