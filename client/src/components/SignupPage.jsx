@@ -263,7 +263,7 @@ export default function SignupPage() {
                 placeholder={placeholder}
                 onChange={handleChange}
                 required
-                className={`w-full bg-orange-50/50 border rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 transition ${
+                className={`w-full bg-orange-50/50 border border-b-4 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 transition ${
                   errors[name]
                     ? "border-red-600 focus:ring-red-500"
                     : "border-orange-200 focus:ring-orange-400"
