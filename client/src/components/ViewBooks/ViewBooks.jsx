@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import EditBookModal from "../EditBookModel/EditBookModal";
 
 const ViewBooks = () => {
   const [books, setBooks] = useState([]);
   const [error, setError] = useState("");
+  const [editBook, setEditBook] = useState(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
-
       if (!token) {
         setError("Unauthorized. Please login.");
         return;
       }
-
       try {
         const response = await fetch(
           "http://localhost:3000/api/books/get-book",
@@ -25,11 +25,9 @@ const ViewBooks = () => {
             },
           }
         );
-
         if (!response.ok) {
           throw new Error("Failed to fetch books.");
         }
-
         const data = await response.json();
         setBooks(data);
       } catch (err) {
@@ -46,12 +44,10 @@ const ViewBooks = () => {
       setError("Unauthorized. Please login.");
       return;
     }
-
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this book?"
     );
     if (!confirmDelete) return;
-
     try {
       const response = await fetch(
         `http://localhost:3000/api/books/delete-book/${bookId}`,
@@ -63,19 +59,29 @@ const ViewBooks = () => {
           },
         }
       );
-
       if (!response.ok) {
         throw new Error("Failed to delete book.");
       }
-
       setBooks(books.filter((book) => book._id !== bookId));
     } catch (err) {
       setError(err.message);
     }
   };
 
+  const handleEdit = (book) => {
+    setEditBook(book);
+  };
+
+  const handleSave = (updatedBook) => {
+    setBooks((prev) =>
+      prev.map((b) => (b._id === updatedBook._id ? updatedBook : b))
+    );
+  };
+
   if (error) {
-    return <p className="text-red-600 font-semibold text-center">{error}</p>;
+    return (
+      <p className="text-red-600 font-semibold text-center">{error}</p>
+    );
   }
 
   return (
@@ -122,18 +128,33 @@ const ViewBooks = () => {
                   Added on: {new Date(book.createdAt).toLocaleString()}
                 </p>
               </div>
-              
-
-              <button
-                onClick={() => handleDelete(book._id)}
-                className="absolute bottom-3 right-3 text-red-500 hover:text-red-700 transition"
-                title="Delete Book"
-              >
-                🗑️
-              </button>
+              <div className="absolute bottom-3 right-3 flex gap-4">
+                <button
+                  onClick={() => handleEdit(book)}
+                  className="text-orange-500 hover:text-orange-700 transition"
+                  title="Edit Book"
+                >
+                  <FaEdit size={18} />
+                </button>
+                <button
+                  onClick={() => handleDelete(book._id)}
+                  className="text-orange-500 hover:text-orange-700 transition"
+                  title="Delete Book"
+                >
+                  <FaTrashAlt />
+                </button>
+              </div>
             </div>
           ))}
         </div>
+      )}
+      {editBook && (
+        <EditBookModal
+          book={editBook}
+          isOpen={!!editBook}
+          onClose={() => setEditBook(null)}
+          onSave={handleSave}
+        />
       )}
     </div>
   );
