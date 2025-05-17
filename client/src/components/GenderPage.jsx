@@ -31,23 +31,41 @@ const GenderPage = () => {
                     <div className="h-2 w-2 bg-gray-300 rounded-full mx-1"></div>
                 </div>
 
-                <div className="flex justify-center items-center bg-white border border-gray-300 rounded-full px-4 py-2 space-x-6 mb-6">
-                    {["male", "female", "notsay"].map((gender) => (
-                        <label key={gender} className="flex items-center space-x-2 text-md text-gray-700 cursor-pointer">
-                            <input
-                                type="radio"
-                                name="gender"
-                                value={gender}
-                                checked={selectedGender === gender}
-                                onChange={() => setSelectedGender(gender)}
-                                className="form-radio text-orange-500 focus:ring-orange-500"
-                            />
-                            <span>
-                                {gender === "male" ? "I am a Male" : gender === "female" ? "I am a Female" : "Rather Not To say"}
-                            </span>
-                        </label>
-                    ))}
-                </div>
+                <div className="flex justify-center items-center 
+                w-full max-w-2xl 
+                bg-white border border-gray-300 rounded-full 
+                px-6 py-1 
+                space-x-15 mb-6
+                shadow-sm
+                transition-all duration-200">
+            {["male", "female", "notsay"].map((gender) => (
+                <label
+                key={gender}
+                className={`
+                    flex items-center space-x-3 text-md text-gray-700 cursor-pointer
+                    px-3 py-2 rounded-full transition
+                    hover:bg-orange-50
+                    ${selectedGender === gender ? "font-semibold text-orange-600" : ""}
+                `}
+                >
+                <input
+                    type="radio"
+                    name="gender"
+                    value={gender}
+                    checked={selectedGender === gender}
+                    onChange={() => setSelectedGender(gender)}
+                    className="form-radio text-orange-500 focus:ring-orange-500"
+                />
+                <span>
+                    {gender === "male"
+                    ? "I am a Male"
+                    : gender === "female"
+                    ? "I am a Female"
+                    : "Rather Not To say"}
+                </span>
+                </label>
+            ))}
+            </div>
 
                 <button
                     onClick={() => navigate("/age-page")}
