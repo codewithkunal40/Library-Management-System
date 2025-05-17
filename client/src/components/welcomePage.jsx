@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, provider } from "./firebase.js";
-
 import { signInWithPopup } from "firebase/auth";
 
 const WelcomePage = () => {
