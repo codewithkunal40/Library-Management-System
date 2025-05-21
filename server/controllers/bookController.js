@@ -5,7 +5,7 @@ import fs from "fs";
 // Admin can add a book with cover image
 export const addBook = async (req, res) => {
   try {
-    const { title, author, isbn, genre, quantity, description, price } =
+    const { title, author, isbn, genre, rating, description, price } =
       req.body;
 
     //  if ISBN is provided
@@ -41,7 +41,7 @@ export const addBook = async (req, res) => {
       author,
       isbn,
       genre,
-      quantity,
+      rating,
       description,
       price,
       coverImage: coverImagePath,

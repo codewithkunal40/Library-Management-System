@@ -91,6 +91,18 @@ const ViewBooks = () => {
     );
   }
 
+  const renderStars = (rating) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    stars.push(
+      <span key={i} className={i <= rating ? "text-yellow-400" : "text-gray-300"}>
+        ★
+      </span>
+    );
+  }
+  return stars;
+};
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">
@@ -110,10 +122,7 @@ const ViewBooks = () => {
               <div className="flex flex-col">
                 <div className="flex items-start gap-4 mb-4">
                   <img
-                    src={`http://localhost:3000/${book.coverImage.replace(
-                      /\\/g,
-                      "/"
-                    )}`}
+                    src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
                     alt={book.title}
                     className="w-32 h-32 object-cover rounded"
                   />
@@ -123,11 +132,16 @@ const ViewBooks = () => {
                     </h2>
                     <p className="text-gray-600">Author: {book.author}</p>
                     <p className="text-gray-600">ISBN: {book.isbn}</p>
+                    <p className="text-gray-600 flex items-center">
+                      Rating: {renderStars(book.rating)} <span className="ml-2 text-sm text-gray-500">({book.rating}/5)</span>
+                    </p>
                   </div>
                 </div>
                 <p className="text-gray-600">Genre: {book.genre}</p>
                 <p className="text-gray-600">Price: ₹{book.price}</p>
-                <p className="text-gray-600">Quantity: {book.quantity}</p>
+
+                
+
                 <p className="text-gray-600 mb-2">
                   Description: {book.description}
                 </p>
@@ -135,6 +149,7 @@ const ViewBooks = () => {
                   Added on: {new Date(book.createdAt).toLocaleString()}
                 </p>
               </div>
+
               <div className="absolute bottom-3 right-3 flex gap-4">
                 <button
                   onClick={() => handleEdit(book)}

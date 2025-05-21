@@ -7,7 +7,7 @@ const AddBookForm = () => {
     author: "",
     isbn: "",
     genre: "",
-    quantity: 1,
+    rating: 0, // Changed from quantity to rating
     description: "",
     price: "",
   });
@@ -16,7 +16,10 @@ const AddBookForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "rating" ? Number(value) : value, // Ensure rating is a number
+    }));
   };
 
   const handleFileChange = (e) => {
@@ -24,49 +27,48 @@ const AddBookForm = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) =>
-      formData.append(key, value)
-    );
-    if (coverImage) formData.append("coverImage", coverImage);
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
+      if (coverImage) formData.append("coverImage", coverImage);
 
-    const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:3000/api/books/add-book", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-      credentials: "include",
-    });
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:3000/api/books/add-book", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+        credentials: "include",
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to add book. Please try again.");
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to add book. Please try again.");
+      }
+
+      toast.success("Book added successfully!");
+      setForm({
+        title: "",
+        author: "",
+        isbn: "",
+        genre: "",
+        rating: 0,
+        description: "",
+        price: "",
+      });
+      setCoverImage(null);
+    } catch (err) {
+      toast.error(err.message || "Failed to add book. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    toast.success("Book added successfully!");
-    setForm({
-      title: "",
-      author: "",
-      isbn: "",
-      genre: "",
-      quantity: 1,
-      description: "",
-      price: "",
-    });
-    setCoverImage(null);
-  } catch (err) {
-    toast.error(err.message || "Failed to add book. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="bg-gradient-to-br from-orange-100 to-orange-300 p-5 flex justify-center">
@@ -104,12 +106,14 @@ const AddBookForm = () => {
               onChange={handleChange}
             />
             <Input
-              label="Quantity"
-              name="quantity"
+              label="Rating"
+              name="rating"
               type="number"
-              value={form.quantity}
+              value={form.rating}
               onChange={handleChange}
-              min="1"
+              min="0"
+              max="5"
+              step="0.1"
             />
             <Input
               label="Price *"
@@ -134,11 +138,11 @@ const AddBookForm = () => {
 
           <div className="mt-4">
             <label
-            htmlFor="coverImage"
-            className="block mb-2 text-sm font-medium text-gray-700"
-          >
-            Cover Image
-          </label>
+              htmlFor="coverImage"
+              className="block mb-2 text-sm font-medium text-gray-700"
+            >
+              Cover Image
+            </label>
             <input
               id="coverImage"
               type="file"
@@ -163,7 +167,7 @@ const AddBookForm = () => {
           </button>
         </form>
       </div>
-      </div>
+    </div>
   );
 };
 

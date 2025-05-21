@@ -22,9 +22,11 @@ const bookSchema = new mongoose.Schema(
       required: [true, "ISBN is required"],
       trim: true,
     },
-    quantity: {
+    rating: {
       type: Number,
-      default: 1,
+      min: 0,
+      max: 5,
+      default: 0,
     },
     price: {
       type: Number,
