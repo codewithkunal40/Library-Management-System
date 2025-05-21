@@ -73,8 +73,8 @@ const AddBookForm = () => {
   return (
     <div className="bg-gradient-to-br from-orange-100 to-orange-300 p-5 flex justify-center">
       <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-md overflow-y-auto max-h-[90vh]">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Add a New Book
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-8 tracking-tight">
+          📚 Add a New Book
         </h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
