@@ -59,7 +59,7 @@ export default function SignupPage() {
         else delete newErrors.phone;
       }
 
-     if (usernameAvailable === false)
+      if (usernameAvailable === false)
       newErrors.username = "Username is already taken.";
 
       if (name === "password" || name === "confirmPassword") {
@@ -309,3 +309,4 @@ export default function SignupPage() {
     </div>
   );
 }
+
