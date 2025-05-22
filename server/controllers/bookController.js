@@ -71,8 +71,18 @@ export const updateBook = async (req, res) => {
     const bookId = req.params.id;
     const updatedData = req.body;
 
+    // Fetch the old book
+    const oldBook = await Book.findById(bookId);
+
     if (req.file) {
-      updatedData.coverImage = req.file.filename;
+      // Delete the old image if it exists
+      if (oldBook && oldBook.coverImage) {
+        const imagePath = path.join(process.cwd(), oldBook.coverImage);
+        fs.unlink(imagePath, err => {
+          if (err) console.log("Old image delete error:", err);
+        });
+      }
+      updatedData.coverImage = path.join("uploads", "books", req.file.filename);
     }
 
     const updatedBook = await Book.findByIdAndUpdate(bookId, updatedData, {
@@ -100,8 +110,8 @@ export const deleteBook = async (req, res) => {
     }
 
     if (book.coverImage) {
-      // Use the correct path to the image
-      const imagePath = path.join(book.coverImage);
+      // Use the correct absolute path
+      const imagePath = path.join(process.cwd(), book.coverImage);
       fs.unlink(imagePath, (err) => {
         if (err) console.log("Image delete error:", err);
       });

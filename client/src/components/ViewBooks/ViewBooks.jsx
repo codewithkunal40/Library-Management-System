@@ -47,33 +47,34 @@ const ViewBooks = () => {
   };
 
   const confirmDelete = async () => {
-    if (!deleteBook) return;
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Unauthorized. Please login.");
-      return;
-    }
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/books/delete-book/${deleteBook._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to delete book.");
+  if (!deleteBook) return;
+  const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("Unauthorized. Please login.");
+    return;
+  }
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/books/delete-book/${deleteBook._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
-      setBooks(books.filter((book) => book._id !== deleteBook._id));
-      setDeleteBook(null);
-    } catch (err) {
-      toast.error(err.message);
-      setDeleteBook(null);
+    );
+    if (!response.ok) {
+      throw new Error("Failed to delete book.");
     }
-  };
+    setBooks(books.filter((book) => book._id !== deleteBook._id));
+    setDeleteBook(null);
+    toast.success(`"${deleteBook.title}" deleted successfully!`);
+  } catch (err) {
+    toast.error(err.message);
+    setDeleteBook(null);
+  }
+};
 
   const handleEdit = (book) => {
     setEditBook(book);
