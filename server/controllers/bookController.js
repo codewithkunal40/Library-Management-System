@@ -94,14 +94,14 @@ export const updateBook = async (req, res) => {
 export const deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
-
     const book = await Book.findByIdAndDelete(bookId);
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
 
     if (book.coverImage) {
-      const imagePath = path.join("uploads", book.coverImage);
+      // Use the correct path to the image
+      const imagePath = path.join(book.coverImage);
       fs.unlink(imagePath, (err) => {
         if (err) console.log("Image delete error:", err);
       });
