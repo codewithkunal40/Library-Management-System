@@ -75,7 +75,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-bl-xs" style={{ pointerEvents: "none" }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs" style={{ pointerEvents: "none" }}>
             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative"
                 style={{
                     pointerEvents: "auto",

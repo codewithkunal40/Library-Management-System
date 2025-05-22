@@ -132,17 +132,15 @@ const ViewBooks = () => {
                       {book.title}
                     </h2>
                     <p className="text-gray-600">Author: {book.author}</p>
-                    <p className="text-gray-600">ISBN: {book.isbn}</p>
+                    
                     <p className="text-gray-600 flex items-center">
                       Rating: {renderStars(book.rating)} <span className="ml-2 text-sm text-gray-500">({book.rating}/5)</span>
                     </p>
                   </div>
                 </div>
+                <p className="text-gray-600">ISBN: {book.isbn}</p>
                 <p className="text-gray-600">Genre: {book.genre}</p>
                 <p className="text-gray-600">Price: ₹{book.price}</p>
-
-                
-
                 <p className="text-gray-600 mb-2">
                   Description: {book.description}
                 </p>
