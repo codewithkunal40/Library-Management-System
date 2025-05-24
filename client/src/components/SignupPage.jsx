@@ -187,7 +187,7 @@ export default function SignupPage() {
       className="min-h-screen flex items-center justify-center bg-no-repeat bg-center bg-cover relative px-4"
       style={{
         backgroundImage:
-          "url('https://res.cloudinary.com/dhtl10m17/image/upload/v1745999239/library_bg_1_iccxly.png')",
+          "url('https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg')",
       }}
     >
       <div className="absolute inset-0 bg-white/10 backdrop-blur-sm" />
