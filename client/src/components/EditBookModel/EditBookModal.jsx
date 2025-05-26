@@ -7,7 +7,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
         author: book.author,
         genre: book.genre,
         isbn: book.isbn,
-        rating: book.rating, // changed from quantity to rating
+        rating: book.rating, 
         price: book.price,
         description: book.description,
         coverImage: null,
@@ -30,7 +30,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
         } else {
             setFormData({ 
                 ...formData, 
-                [name]: name === "rating" ? Number(value) : value // ensure rating is a number
+                [name]: name === "rating" ? Number(value) : value
             });
         }
     };
@@ -64,7 +64,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
 
             const updatedBook = await response.json();
             onSave(updatedBook);
-            toast.success("Book updated successfully!"); // Success toast
+            toast.success("Book updated successfully!"); 
             onClose();
         } catch (err) {
             setError(err.message);

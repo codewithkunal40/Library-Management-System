@@ -3,6 +3,15 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { FiCamera, FiUserPlus } from "react-icons/fi";
 
+const ALLOWED_EMAIL_DOMAINS = [
+  "gmail.com",
+  "yahoo.com",
+  "hotmail.com",
+  "outlook.com",
+  "icloud.com",
+];
+
+
 export default function SignupPage() {
   const initialFormState = {
     fullName: "",
@@ -28,6 +37,12 @@ export default function SignupPage() {
   // Validation regex
   const validateFullName = (name) => /^[A-Za-z\s]+$/.test(name);
   const validatePhone = (phone) => /^\d{10}$/.test(phone);
+  // email domain
+  const validateEmailDomain = (email) => {
+  if (!email.includes("@")) return false;
+  const domain = email.split("@")[1].toLowerCase();
+  return ALLOWED_EMAIL_DOMAINS.includes(domain);
+};
 
   // Handle input changes
   const handleChange = (e) => {
@@ -45,6 +60,14 @@ export default function SignupPage() {
 
     setErrors((prev) => {
       const newErrors = { ...prev };
+
+      if (name === "email") {
+  if (!validateEmailDomain(value)) {
+    newErrors.email = `Email must be one of: ${ALLOWED_EMAIL_DOMAINS.join(", ")}`;
+  } else {
+    delete newErrors.email;
+  }
+}
 
       if (name === "fullName") {
         if (!validateFullName(value))
@@ -120,6 +143,8 @@ export default function SignupPage() {
 
   const validateBeforeSubmit = () => {
     const newErrors = {};
+    if (!validateEmailDomain(formData.email)) 
+      newErrors.email = `Email must be one of: ${ALLOWED_EMAIL_DOMAINS.join(", ")}`;
     if (!validateFullName(formData.fullName))
       newErrors.fullName = "Full Name must contain only letters and spaces.";
     if (!validatePhone(formData.phone))

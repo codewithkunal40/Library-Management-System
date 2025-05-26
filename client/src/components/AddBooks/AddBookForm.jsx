@@ -7,7 +7,7 @@ const AddBookForm = () => {
     author: "",
     isbn: "",
     genre: "",
-    rating: 0, // Changed from quantity to rating
+    rating: 0, 
     description: "",
     price: "",
   });
@@ -18,7 +18,7 @@ const AddBookForm = () => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "rating" ? Number(value) : value, // Ensure rating is a number
+      [name]: name === "rating" ? Number(value) : value, 
     }));
   };
 
@@ -70,6 +70,25 @@ const AddBookForm = () => {
     }
   };
 
+  const GENRES = [
+  "Fiction",
+  "Non-Fiction",
+  "Productivity / Self-Help",
+  "Science Fiction",
+  "Self-Help / Psychology",
+  "Fantasy",
+  "Mystery",
+  "Thriller",
+  "Romance",
+  "Biography",
+  "History",
+  "Children",
+  "Young Adult",
+  "Self-Help",
+  "Other",
+];
+
+
   return (
     <div className="bg-gradient-to-br from-orange-100 to-orange-300 p-5 flex justify-center">
       <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-md overflow-y-auto max-h-[90vh]">
@@ -99,12 +118,23 @@ const AddBookForm = () => {
               onChange={handleChange}
               required
             />
-            <Input
-              label="Genre"
-              name="genre"
-              value={form.genre}
-              onChange={handleChange}
-            />
+            <div>
+              <label className="block font-semibold mb-1">Genre *</label>
+              <select
+                name="genre"
+                value={form.genre}
+                onChange={handleChange}
+                required
+                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              >
+                <option value="">Select a genre</option>
+                {GENRES.map((genre) => (
+                  <option key={genre} value={genre}>
+                    {genre}
+                  </option>
+                ))}
+              </select>
+            </div>
             <Input
               label="Rating"
               name="rating"
