@@ -5,6 +5,7 @@ import ViewBooks from "./ViewBooks/ViewBooks";
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedSection, setSelectedSection] = useState("home");
+  const [filters, setFilters] = useState({ name: "", genre: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,15 +22,46 @@ const UserDashboard = () => {
   const displayName =
     user?.displayName || user?.name || user?.username || "User";
 
- const profileImage = user?.profilePic
-  ? `http://localhost:3000/uploads/profiles/${user.profilePic}`
-  : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+  const profileImage = user?.profilePic
+    ? `http://localhost:3000/uploads/profiles/${user.profilePic}`
+    : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
+  const handleSearchInputChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
 
   const renderMainContent = () => {
     switch (selectedSection) {
       case "view-books":
         return <ViewBooks />;
+      case "search-books":
+        return (
+          <div className="bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-bold mb-4 text-blue-900 text-center">
+              Search Books
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <input
+                type="text"
+                name="name"
+                value={filters.name}
+                onChange={handleSearchInputChange}
+                placeholder="Search by Book Name"
+                className="p-3 border border-gray-300 rounded-lg focus:outline-none"
+              />
+              <input
+                type="text"
+                name="genre"
+                value={filters.genre}
+                onChange={handleSearchInputChange}
+                placeholder="Search by Genre"
+                className="p-3 border border-gray-300 rounded-lg focus:outline-none"
+              />
+            </div>
+            <ViewBooks filters={filters} />
+          </div>
+        );
       case "home":
       default:
         return (
@@ -87,6 +119,18 @@ const UserDashboard = () => {
                   View All Books
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => setSelectedSection("search-books")}
+                  className={`block w-full ${
+                    selectedSection === "search-books"
+                      ? "bg-orange-500 text-white"
+                      : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+                  } font-semibold py-2 px-4 rounded-lg text-start transition duration-200`}
+                >
+                  Search Books
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
@@ -99,9 +143,7 @@ const UserDashboard = () => {
         </button>
       </aside>
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        {renderMainContent()}
-      </main>
+      <main className="flex-1 p-8 overflow-y-auto">{renderMainContent()}</main>
     </div>
   ) : null;
 };

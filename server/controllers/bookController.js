@@ -5,10 +5,8 @@ import fs from "fs";
 // Admin can add a book with cover image
 export const addBook = async (req, res) => {
   try {
-    const { title, author, isbn, genre, rating, description, price } =
-      req.body;
+    const { title, author, isbn, genre, rating, description, price } = req.body;
 
-    //  if ISBN is provided
     if (!isbn) {
       return res.status(400).json({ message: "ISBN is required" });
     }
@@ -19,16 +17,12 @@ export const addBook = async (req, res) => {
     }
 
     if (!title || !author || price === undefined) {
-      return res
-        .status(400)
-        .json({ message: "Title, author, ISBN, and price are required" });
+      return res.status(400).json({ message: "Title, author, ISBN, and price are required" });
     }
 
     const existingBook = await Book.findOne({ isbn });
     if (existingBook) {
-      return res
-        .status(400)
-        .json({ message: "Book with this ISBN already exists" });
+      return res.status(400).json({ message: "Book with this ISBN already exists" });
     }
 
     let coverImagePath = "";
@@ -65,17 +59,41 @@ export const getAllBooks = async (req, res) => {
   }
 };
 
+// Search Books
+export const searchBooks = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || query.trim() === "") {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    const regex = new RegExp(query, "i"); // case-insensitive
+    const books = await Book.find({
+      $or: [
+        { title: regex },
+        { author: regex },
+        { genre: regex },
+        { isbn: regex },
+      ],
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(books);
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ message: "Error searching books" });
+  }
+};
+
 // UPDATE book
 export const updateBook = async (req, res) => {
   try {
     const bookId = req.params.id;
     const updatedData = req.body;
 
-    // Fetch the old book
     const oldBook = await Book.findById(bookId);
 
     if (req.file) {
-      // Delete the old image if it exists
       if (oldBook && oldBook.coverImage) {
         const imagePath = path.join(process.cwd(), oldBook.coverImage);
         fs.unlink(imagePath, err => {
@@ -105,14 +123,14 @@ export const deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
     const book = await Book.findByIdAndDelete(bookId);
+
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
 
     if (book.coverImage) {
-      // Use the correct absolute path
       const imagePath = path.join(process.cwd(), book.coverImage);
-      fs.unlink(imagePath, (err) => {
+      fs.unlink(imagePath, err => {
         if (err) console.log("Image delete error:", err);
       });
     }
