@@ -68,7 +68,7 @@ export const searchBooks = async (req, res) => {
       return res.status(400).json({ message: "Search query is required" });
     }
 
-    const regex = new RegExp(query, "i"); // case-insensitive
+    const regex = new RegExp(query, "i"); 
     const books = await Book.find({
       $or: [
         { title: regex },
