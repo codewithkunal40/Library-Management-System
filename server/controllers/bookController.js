@@ -17,12 +17,16 @@ export const addBook = async (req, res) => {
     }
 
     if (!title || !author || price === undefined) {
-      return res.status(400).json({ message: "Title, author, ISBN, and price are required" });
+      return res
+        .status(400)
+        .json({ message: "Title, author, ISBN, and price are required" });
     }
 
     const existingBook = await Book.findOne({ isbn });
     if (existingBook) {
-      return res.status(400).json({ message: "Book with this ISBN already exists" });
+      return res
+        .status(400)
+        .json({ message: "Book with this ISBN already exists" });
     }
 
     let coverImagePath = "";
@@ -59,32 +63,6 @@ export const getAllBooks = async (req, res) => {
   }
 };
 
-// Search Books
-export const searchBooks = async (req, res) => {
-  try {
-    const { query } = req.query;
-
-    if (!query || query.trim() === "") {
-      return res.status(400).json({ message: "Search query is required" });
-    }
-
-    const regex = new RegExp(query, "i"); 
-    const books = await Book.find({
-      $or: [
-        { title: regex },
-        { author: regex },
-        { genre: regex },
-        { isbn: regex },
-      ],
-    }).sort({ createdAt: -1 });
-
-    res.status(200).json(books);
-  } catch (error) {
-    console.error("Search error:", error);
-    res.status(500).json({ message: "Error searching books" });
-  }
-};
-
 // UPDATE book
 export const updateBook = async (req, res) => {
   try {
@@ -96,7 +74,7 @@ export const updateBook = async (req, res) => {
     if (req.file) {
       if (oldBook && oldBook.coverImage) {
         const imagePath = path.join(process.cwd(), oldBook.coverImage);
-        fs.unlink(imagePath, err => {
+        fs.unlink(imagePath, (err) => {
           if (err) console.log("Old image delete error:", err);
         });
       }
@@ -130,7 +108,7 @@ export const deleteBook = async (req, res) => {
 
     if (book.coverImage) {
       const imagePath = path.join(process.cwd(), book.coverImage);
-      fs.unlink(imagePath, err => {
+      fs.unlink(imagePath, (err) => {
         if (err) console.log("Image delete error:", err);
       });
     }

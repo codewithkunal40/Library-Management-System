@@ -4,7 +4,6 @@ import {
   getAllBooks,
   updateBook,
   deleteBook,
-  searchBooks,
 } from "../controllers/bookController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadBookImage.js";
@@ -22,9 +21,6 @@ router.post(
 
 //  Admin and users can view all books
 router.get("/get-book", protect, getAllBooks);
-
-// Search books by title, author, genre, or ISBN
-router.get("/search", protect, searchBooks);
 
 // Only admin can update a book
 router.put(
