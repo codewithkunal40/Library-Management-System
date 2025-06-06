@@ -88,9 +88,7 @@ const UserDashboard = () => {
               className="w-24 h-24 rounded-full border-4 border-white shadow mb-2 object-cover"
             />
             <h2 className="text-xl font-bold text-center">{displayName}</h2>
-            <p className="text-sm text-gray-500 text-center">
-              {user?.email}
-            </p>
+            <p className="text-sm text-gray-500 text-center">{user?.email}</p>
           </div>
 
           <nav className="mt-8">
