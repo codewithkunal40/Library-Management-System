@@ -9,8 +9,16 @@ const ViewBooks = ({ filters = {} }) => {
   const [error, setError] = useState("");
   const [editBook, setEditBook] = useState(null);
   const [deleteBook, setDeleteBook] = useState(null);
+  const [userRole, setUserRole] = useState("user");
 
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.role === "admin") {
+      setUserRole("admin");
+    } else {
+      setUserRole("user");
+    }
+
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -95,7 +103,6 @@ const ViewBooks = ({ filters = {} }) => {
     return stars;
   };
 
-  // Fliter books name/genre
   const filteredBooks = books.filter((book) => {
     const nameMatch = book.title.toLowerCase().includes(filters.name?.toLowerCase() || "");
     const genreMatch = book.genre.toLowerCase().includes(filters.genre?.toLowerCase() || "");
@@ -108,9 +115,7 @@ const ViewBooks = ({ filters = {} }) => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">
-        All Books
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">All Books</h1>
       {filteredBooks.length === 0 ? (
         <p className="text-center text-gray-600 font-medium">
           No books found with the given filters.
@@ -147,22 +152,24 @@ const ViewBooks = ({ filters = {} }) => {
                 </p>
               </div>
 
-              <div className="absolute bottom-3 right-3 flex gap-4">
-                <button
-                  onClick={() => handleEdit(book)}
-                  className="text-orange-500 hover:text-orange-700 transition"
-                  title="Edit Book"
-                >
-                  <FaEdit size={18} />
-                </button>
-                <button
-                  onClick={() => handleDelete(book)}
-                  className="text-orange-500 hover:text-orange-700 transition"
-                  title="Delete Book"
-                >
-                  <FaTrashAlt />
-                </button>
-              </div>
+              {userRole === "admin" && (
+                <div className="absolute bottom-3 right-3 flex gap-4">
+                  <button
+                    onClick={() => handleEdit(book)}
+                    className="text-orange-500 hover:text-orange-700 transition"
+                    title="Edit Book"
+                  >
+                    <FaEdit size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(book)}
+                    className="text-orange-500 hover:text-orange-700 transition"
+                    title="Delete Book"
+                  >
+                    <FaTrashAlt />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
