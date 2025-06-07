@@ -77,6 +77,7 @@ const AddBookForm = () => {
   "Science Fiction",
   "Self-Help / Psychology",
   "Fantasy",
+  "Romance / Young Adult",
   "Mystery",
   "Thriller",
   "Romance",
