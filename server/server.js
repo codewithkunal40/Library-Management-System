@@ -4,11 +4,12 @@ import connectDB from "./connection.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
+import borrowRoutes from "./routes/borrowRoutes.js";
+
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-
 
 dotenv.config();
 const app = express();
@@ -17,12 +18,13 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Connect to DB
 connectDB();
 
-
+// Serve profile uploads
 app.use("/uploads/profiles", express.static(path.join(__dirname, "uploads/profiles")));
 
-
+// CORS Configuration
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -35,13 +37,14 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/borrow", borrowRoutes); 
 
+// Server Start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

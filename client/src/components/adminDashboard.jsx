@@ -34,7 +34,7 @@ const AdminDashboard = () => {
       default:
         return (
           <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-center text-orange-800 mb-2">
               Admin Dashboard
             </h1>
             <p className="text-lg font-medium text-gray-600 text-center">

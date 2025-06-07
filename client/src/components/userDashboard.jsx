@@ -66,11 +66,12 @@ const UserDashboard = () => {
       default:
         return (
           <div className="bg-white shadow-md rounded-lg p-6">
-            <h1 className="text-3xl font-bold text-blue-900 mb-2 text-center">
+            <h1 className="text-3xl font-bold text-orange-800 mb-2 text-center">
               User Dashboard
             </h1>
             <p className="text-gray-700 text-center font-medium">
-              Welcome back, {displayName}!
+              Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
+
             </p>
           </div>
         );
