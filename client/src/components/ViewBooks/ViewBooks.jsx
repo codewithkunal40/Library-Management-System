@@ -10,6 +10,29 @@ const ViewBooks = ({ filters = {} }) => {
   const [editBook, setEditBook] = useState(null);
   const [deleteBook, setDeleteBook] = useState(null);
   const [userRole, setUserRole] = useState("user");
+  //for borrow and return feature
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
+
+  useEffect(() => {
+  const fetchBorrowedBooks = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const response = await fetch("http://localhost:3000/api/borrow/my-books", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to fetch borrowed books");
+      const data = await response.json();
+      setBorrowedBooks(data);
+    } catch (err) {
+      setError(err.message);
+      toast.error(err.message);
+    }
+  };
+  fetchBorrowedBooks();
+}, []);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -80,6 +103,61 @@ const ViewBooks = ({ filters = {} }) => {
       setDeleteBook(null);
     }
   };
+
+  const isBookBorrowed = (bookId) => {
+  return borrowedBooks.some(
+    (b) => b.bookId._id === bookId && !b.isReturned
+  );
+};
+
+
+  const handleBorrow = async (bookId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`http://localhost:3000/api/borrow/borrow/${bookId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to borrow book");
+    toast.success(data.message);
+    // Refresh borrowed books
+    setBorrowedBooks((prev) => [
+      ...prev,
+      { bookId: { _id: bookId }, isReturned: false },
+    ]);
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
+const handleReturn = async (bookId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to return book");
+    toast.success(data.message);
+    // Refresh borrowed books
+    setBorrowedBooks((prev) =>
+      prev.map((b) =>
+        b.bookId._id === bookId ? { ...b, isReturned: true } : b
+      )
+    );
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
 
   const handleEdit = (book) => {
     setEditBook(book);
@@ -170,6 +248,26 @@ const ViewBooks = ({ filters = {} }) => {
                   </button>
                 </div>
               )}
+              {userRole === "user" && (
+                <div className="mt-3">
+                  {!isBookBorrowed(book._id) ? (
+                    <button
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded"
+                      onClick={() => handleBorrow(book._id)}
+                    >
+                      Borrow
+                    </button>
+                  ) : (
+                    <button
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                      onClick={() => handleReturn(book._id)}
+                    >
+                      Return
+                    </button>
+                  )}
+                </div>
+              )}
+
             </div>
           ))}
         </div>
