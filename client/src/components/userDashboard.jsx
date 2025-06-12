@@ -34,7 +34,7 @@ const UserDashboard = () => {
   const renderMainContent = () => {
     switch (selectedSection) {
       case "view-books":
-        return <ViewBooks />;
+        return <ViewBooks showPdfButton userId={user?._id} />;
       case "search-books":
         return (
           <div className="bg-white shadow-md rounded-lg p-6">
@@ -59,7 +59,7 @@ const UserDashboard = () => {
                 className="p-3 border border-gray-300 rounded-lg focus:outline-none"
               />
             </div>
-            <ViewBooks filters={filters} />
+            <ViewBooks filters={filters} showPdfButton userId={user?._id} />
           </div>
         );
       case "home":
@@ -71,7 +71,6 @@ const UserDashboard = () => {
             </h1>
             <p className="text-gray-700 text-center font-medium">
               Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
-
             </p>
           </div>
         );

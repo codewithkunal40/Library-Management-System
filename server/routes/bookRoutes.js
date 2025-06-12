@@ -6,7 +6,8 @@ import {
   deleteBook,
 } from "../controllers/bookController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadBookImage.js";
+
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -15,7 +16,10 @@ router.post(
   "/add-book",
   protect,
   isAdmin,
-  upload.single("coverImage"),
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "pdf", maxCount: 1 },
+  ]),
   addBook
 );
 

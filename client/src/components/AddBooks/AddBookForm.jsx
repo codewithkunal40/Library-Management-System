@@ -7,23 +7,28 @@ const AddBookForm = () => {
     author: "",
     isbn: "",
     genre: "",
-    rating: 0, 
+    rating: 0,
     description: "",
     price: "",
   });
   const [coverImage, setCoverImage] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null); 
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "rating" ? Number(value) : value, 
+      [name]: name === "rating" ? Number(value) : value,
     }));
   };
 
   const handleFileChange = (e) => {
     setCoverImage(e.target.files[0]);
+  };
+
+  const handlePdfChange = (e) => {
+    setPdfFile(e.target.files[0]); // PDF FILE CHANGE
   };
 
   const handleSubmit = async (e) => {
@@ -35,6 +40,7 @@ const AddBookForm = () => {
         formData.append(key, value)
       );
       if (coverImage) formData.append("coverImage", coverImage);
+      if (pdfFile) formData.append("pdf", pdfFile); // ADD PDF TO FORM DATA
 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/books/add-book", {
@@ -63,6 +69,7 @@ const AddBookForm = () => {
         price: "",
       });
       setCoverImage(null);
+      setPdfFile(null);
     } catch (err) {
       toast.error(err.message || "Failed to add book. Please try again.");
     } finally {
@@ -71,24 +78,11 @@ const AddBookForm = () => {
   };
 
   const GENRES = [
-  "Fiction",
-  "Non-Fiction",
-  "Productivity / Self-Help",
-  "Science Fiction",
-  "Self-Help / Psychology",
-  "Fantasy",
-  "Romance / Young Adult",
-  "Mystery",
-  "Thriller",
-  "Romance",
-  "Biography",
-  "History",
-  "Children",
-  "Young Adult",
-  "Self-Help",
-  "Other",
-];
-
+    "Fiction", "Non-Fiction", "Productivity / Self-Help", "Science Fiction",
+    "Self-Help / Psychology", "Fantasy", "Romance / Young Adult", "Mystery",
+    "Thriller", "Romance", "Biography", "History", "Children", "Young Adult",
+    "Self-Help", "Other"
+  ];
 
   return (
     <div className="bg-gradient-to-br from-orange-100 to-orange-300 p-5 flex justify-center">
@@ -98,27 +92,9 @@ const AddBookForm = () => {
         </h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Title *"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              label="Author *"
-              name="author"
-              value={form.author}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              label="ISBN *"
-              name="isbn"
-              value={form.isbn}
-              onChange={handleChange}
-              required
-            />
+            <Input label="Title *" name="title" value={form.title} onChange={handleChange} required />
+            <Input label="Author *" name="author" value={form.author} onChange={handleChange} required />
+            <Input label="ISBN *" name="isbn" value={form.isbn} onChange={handleChange} required />
             <div>
               <label className="block font-semibold mb-1">Genre *</label>
               <select
@@ -130,30 +106,12 @@ const AddBookForm = () => {
               >
                 <option value="">Select a genre</option>
                 {GENRES.map((genre) => (
-                  <option key={genre} value={genre}>
-                    {genre}
-                  </option>
+                  <option key={genre} value={genre}>{genre}</option>
                 ))}
               </select>
             </div>
-            <Input
-              label="Rating"
-              name="rating"
-              type="number"
-              value={form.rating}
-              onChange={handleChange}
-              min="0"
-              max="5"
-              step="0.1"
-            />
-            <Input
-              label="Price *"
-              name="price"
-              type="number"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
+            <Input label="Rating" name="rating" type="number" value={form.rating} onChange={handleChange} min="0" max="5" step="0.1" />
+            <Input label="Price *" name="price" type="number" value={form.price} onChange={handleChange} required />
           </div>
 
           <div className="mt-4">
@@ -168,24 +126,22 @@ const AddBookForm = () => {
           </div>
 
           <div className="mt-4">
-            <label
-              htmlFor="coverImage"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Cover Image
-            </label>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Cover Image</label>
             <input
-              id="coverImage"
               type="file"
-              name="coverImage"
               accept="image/*"
               onChange={handleFileChange}
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100
-                cursor-pointer transition"
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer transition"
+            />
+          </div>
+
+          <div className="mt-4">
+            <label className="block mb-2 text-sm font-medium text-gray-700">PDF File</label>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={handlePdfChange}
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer transition"
             />
           </div>
 
@@ -202,7 +158,6 @@ const AddBookForm = () => {
   );
 };
 
-// Reusable Input
 const Input = ({ label, name, value, onChange, type = "text", ...rest }) => (
   <div>
     <label className="block font-semibold mb-1">{label}</label>
