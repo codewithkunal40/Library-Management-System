@@ -1,4 +1,4 @@
-// upload.js
+
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -30,7 +30,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Export the upload instance (not a specific .fields call)
+
 const upload = multer({
   storage,
   fileFilter,

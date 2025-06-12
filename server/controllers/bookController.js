@@ -95,14 +95,14 @@ export const deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
 
-    // Find and delete the book from the database
+    // Find and delete the book 
     const book = await Book.findByIdAndDelete(bookId);
 
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
 
-    // Handle cover image deletion safely
+    
     if (book.coverImage) {
       const imagePath = path.join(process.cwd(), book.coverImage);
       if (fs.existsSync(imagePath)) {
@@ -114,7 +114,7 @@ export const deleteBook = async (req, res) => {
       }
     }
 
-    // Optional: Handle PDF deletion if applicable
+  
     if (book.pdf) {
       const pdfPath = path.join(process.cwd(), book.pdf);
       if (fs.existsSync(pdfPath)) {

@@ -40,7 +40,7 @@ const AddBookForm = () => {
         formData.append(key, value)
       );
       if (coverImage) formData.append("coverImage", coverImage);
-      if (pdfFile) formData.append("pdf", pdfFile); // ADD PDF TO FORM DATA
+      if (pdfFile) formData.append("pdf", pdfFile); 
 
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:3000/api/books/add-book", {
