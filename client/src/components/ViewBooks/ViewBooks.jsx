@@ -91,25 +91,33 @@ const ViewBooks = ({ filters = {} }) => {
   };
 
   const handleReturn = async (bookId) => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to return book");
-      toast.success(data.message);
-      setBorrowedBooks((prev) =>
-        prev.map((b) => (b.bookId._id === bookId ? { ...b, isReturned: true } : b))
-      );
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+  const token = localStorage.getItem("token");
+  try {
+    const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to return book");
+
+    toast.success(data.message);
+
+    setBorrowedBooks((prev) =>
+      prev.map((b) => {
+        const bId = b.bookId?._id || b.bookId;
+        return bId === bookId ? { ...b, isReturned: true } : b;
+      })
+    );
+  } catch (err) {
+    console.error("Return Book Error:", err);
+    toast.error(err.message);
+  }
+};
+
 
   const confirmDelete = async () => {
     const token = localStorage.getItem("token");
