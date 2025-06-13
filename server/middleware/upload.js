@@ -1,35 +1,45 @@
-
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 
-// Create upload directory
-const uploadDir = path.join("uploads", "books");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
+// decide folder based on file tpye
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDir);
+    let folder = "uploads/books";
+
+    if (file.mimetype === "application/pdf") {
+      folder = "uploads/pdfs";
+    }
+
+    const uploadPath = path.join(folder);
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + file.originalname;
+    const uniqueSuffix =
+      Date.now() + "-" + file.originalname.replace(/\s+/g, "_");
     cb(null, uniqueSuffix);
   },
 });
 
-// File filter
 const fileFilter = (req, file, cb) => {
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf",
+  ];
+
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only JPG, PNG, and PDF files are allowed"), false);
+    cb(new Error("Only JPG, PNG, WEBP, and PDF files are allowed"), false);
   }
 };
-
 
 const upload = multer({
   storage,
