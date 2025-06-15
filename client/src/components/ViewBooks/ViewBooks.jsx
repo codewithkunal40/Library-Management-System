@@ -33,7 +33,12 @@ const ViewBooks = ({ filters = {} }) => {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUserRole(storedUser?.role === "admin" ? "admin" : "user");
+
+    if (storedUser && storedUser.role === "admin") {
+      setUserRole("admin");
+    } else {
+      setUserRole("user");
+    }
 
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
@@ -91,33 +96,32 @@ const ViewBooks = ({ filters = {} }) => {
   };
 
   const handleReturn = async (bookId) => {
-  const token = localStorage.getItem("token");
-  try {
-    const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Failed to return book");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to return book");
 
-    toast.success(data.message);
+      toast.success(data.message);
 
-    setBorrowedBooks((prev) =>
-      prev.map((b) => {
-        const bId = b.bookId?._id || b.bookId;
-        return bId === bookId ? { ...b, isReturned: true } : b;
-      })
-    );
-  } catch (err) {
-    console.error("Return Book Error:", err);
-    toast.error(err.message);
-  }
-};
-
+      setBorrowedBooks((prev) =>
+        prev.map((b) => {
+          const bId = b.bookId?._id || b.bookId;
+          return bId === bookId ? { ...b, isReturned: true } : b;
+        })
+      );
+    } catch (err) {
+      console.error("Return Book Error:", err);
+      toast.error(err.message);
+    }
+  };
 
   const confirmDelete = async () => {
     const token = localStorage.getItem("token");

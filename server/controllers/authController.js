@@ -8,7 +8,7 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
-// === REGISTER ===
+// REGISTER
 export const register = async (req, res) => {
   try {
     const {
@@ -22,16 +22,20 @@ export const register = async (req, res) => {
       confirmPassword,
     } = req.body;
 
-    // === Form Validations ===
+    // Form Validations
     const nameRegex = /^[A-Za-z\s]+$/;
     const phoneRegex = /^\d{10}$/;
 
     if (!nameRegex.test(fullName)) {
-      return res.status(400).json({ msg: "Full name must contain only letters and spaces." });
+      return res
+        .status(400)
+        .json({ msg: "Full name must contain only letters and spaces." });
     }
 
     if (!phoneRegex.test(phone)) {
-      return res.status(400).json({ msg: "Phone number must be exactly 10 digits." });
+      return res
+        .status(400)
+        .json({ msg: "Phone number must be exactly 10 digits." });
     }
 
     if (!dob || isNaN(Date.parse(dob))) {
@@ -39,7 +43,9 @@ export const register = async (req, res) => {
     }
 
     if (!username || username.length < 3) {
-      return res.status(400).json({ msg: "Username must be at least 3 characters long." });
+      return res
+        .status(400)
+        .json({ msg: "Username must be at least 3 characters long." });
     }
 
     if (!email || !email.includes("@")) {
@@ -47,7 +53,9 @@ export const register = async (req, res) => {
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ msg: "Password must be at least 6 characters long." });
+      return res
+        .status(400)
+        .json({ msg: "Password must be at least 6 characters long." });
     }
 
     if (password !== confirmPassword) {
@@ -59,7 +67,9 @@ export const register = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ msg: "User with this email or username already exists." });
+      return res
+        .status(400)
+        .json({ msg: "User with this email or username already exists." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -83,7 +93,7 @@ export const register = async (req, res) => {
   }
 };
 
-// === LOGIN ===
+// LOGIN
 export const login = async (req, res) => {
   try {
     const { identifier, password } = req.body;
@@ -114,7 +124,43 @@ export const login = async (req, res) => {
   }
 };
 
-// === SEND OTP ===
+// Google login
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { email, displayName, profilePic } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        email,
+        username: email.split("@")[0],
+        fullName: displayName,
+        password: "",
+        role: "user",
+        profilePic,
+      });
+    }
+
+    const token = generateToken(user._id, user.role);
+
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        profilePic: user.profilePic,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+// SEND OTP
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -133,7 +179,7 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-// === RESET PASSWORD ===
+// RESET PASSWORD
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;

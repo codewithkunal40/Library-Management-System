@@ -4,9 +4,9 @@ import {
   getAllBooks,
   updateBook,
   deleteBook,
+  getLibraryStats,
 } from "../controllers/bookController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
-
 import upload from "../middleware/upload.js";
 
 const router = express.Router();
@@ -23,7 +23,7 @@ router.post(
   addBook
 );
 
-//  Admin and users can view all books
+// Admin and users can view all books
 router.get("/get-book", protect, getAllBooks);
 
 // Only admin can update a book
@@ -37,5 +37,8 @@ router.put(
 
 // Only admin can delete a book
 router.delete("/delete-book/:id", protect, isAdmin, deleteBook);
+
+// Route for stats
+router.get("/dashboard-stats", protect, getLibraryStats);
 
 export default router;

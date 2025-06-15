@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import axios from "axios";
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedSection, setSelectedSection] = useState("home");
   const [filters, setFilters] = useState({ name: "", genre: "" });
+  const [stats, setStats] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,8 +17,23 @@ const UserDashboard = () => {
     else setUser(storedUser);
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/books/dashboard-stats", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        setStats(res.data);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+    if (user) fetchStats();
+  }, [user]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -29,6 +47,32 @@ const UserDashboard = () => {
   const handleSearchInputChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const renderStatsChart = () => {
+    if (!stats) return null;
+    const chartData = [
+      { name: "Total Books", value: stats.totalBooks },
+      { name: "Borrowed", value: stats.borrowedCount },
+      { name: "Not Returned", value: stats.notReturnedCount },
+    ];
+
+    return (
+      <div className="mt-8 bg-orange-100 p-4 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-center mb-4 text-orange-800">
+          Your Library Activity
+        </h2>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Bar dataKey="value" fill="#fb923c" radius={[6, 6, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    );
   };
 
   const renderMainContent = () => {
@@ -72,6 +116,7 @@ const UserDashboard = () => {
             <p className="text-gray-700 text-center font-medium">
               Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
             </p>
+            {renderStatsChart()}
           </div>
         );
     }
