@@ -9,8 +9,18 @@ const ViewBooks = ({ filters = {} }) => {
   const [, setError] = useState("");
   const [editBook, setEditBook] = useState(null);
   const [deleteBook, setDeleteBook] = useState(null);
-  const [userRole, setUserRole] = useState("user");
+  const [userRole, setUserRole] = useState(""); // Initially empty
   const [borrowedBooks, setBorrowedBooks] = useState([]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser?.role) {
+      setUserRole(storedUser.role);
+    } else {
+      // Default to user if no role found (like in Google login)
+      setUserRole("user");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchBorrowedBooks = async () => {
@@ -28,17 +38,6 @@ const ViewBooks = ({ filters = {} }) => {
         toast.error(err.message);
       }
     };
-    fetchBorrowedBooks();
-  }, []);
-
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    if (storedUser && storedUser.role === "admin") {
-      setUserRole("admin");
-    } else {
-      setUserRole("user");
-    }
 
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
@@ -63,6 +62,7 @@ const ViewBooks = ({ filters = {} }) => {
       }
     };
 
+    fetchBorrowedBooks();
     fetchBooks();
   }, []);
 
@@ -154,6 +154,10 @@ const ViewBooks = ({ filters = {} }) => {
     const genreMatch = book.genre.toLowerCase().includes(filters.genre?.toLowerCase() || "");
     return nameMatch && genreMatch;
   });
+
+  if (!userRole) {
+    return <div className="text-center py-10 text-gray-500">Loading...</div>;
+  }
 
   return (
     <div className="p-6">
