@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Otp from "../models/Otp.js";
 import sendEmail from "../utils/sendEmail.js";
+import Book from "../models/bookModel.js";
+import BorrowedBook from "../models/borrowedBookModel.js";
 
 const generateToken = (id, role) => {
   return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "30d" });
@@ -22,7 +24,6 @@ export const register = async (req, res) => {
       confirmPassword,
     } = req.body;
 
-    // Form Validations
     const nameRegex = /^[A-Za-z\s]+$/;
     const phoneRegex = /^\d{10}$/;
 
@@ -124,8 +125,7 @@ export const login = async (req, res) => {
   }
 };
 
-// Google login
-
+// Google Login
 export const googleLogin = async (req, res) => {
   try {
     const { email, displayName, profilePic } = req.body;
@@ -160,7 +160,7 @@ export const googleLogin = async (req, res) => {
   }
 };
 
-// SEND OTP
+// Send OTP
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body;
@@ -179,7 +179,7 @@ export const sendOtp = async (req, res) => {
   }
 };
 
-// RESET PASSWORD
+// Reset Password
 export const resetPassword = async (req, res) => {
   try {
     const { email, otp, newPassword } = req.body;
@@ -193,6 +193,41 @@ export const resetPassword = async (req, res) => {
     await Otp.deleteMany({ email });
 
     res.json({ msg: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+// Admin Dashboard Stats
+export const getAdminStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalAdmins = await User.countDocuments({ role: "admin" });
+    const totalBooks = await Book.countDocuments();
+
+    const borrowedBooks = await BorrowedBook.countDocuments({
+      isReturned: false,
+    });
+    const returnedBooks = await BorrowedBook.countDocuments({
+      isReturned: true,
+    });
+
+    res.status(200).json({
+      totalUsers,
+      totalAdmins,
+      totalBooks,
+      borrowedBooks,
+      returnedBooks,
+    });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }

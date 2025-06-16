@@ -2,10 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBooks from "./AddBooks/AddBookForm";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 
 const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
   const [selectedSection, setSelectedSection] = useState("dashboard");
+  const [stats, setStats] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,8 +24,27 @@ const AdminDashboard = () => {
     else setAdmin(storedAdmin);
   }, [navigate]);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/admin/stats", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) setStats(data);
+      } catch (err) {
+        console.error("Failed to fetch admin stats", err);
+      }
+    };
+
+    if (admin) fetchStats();
+  }, [admin]);
+
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -23,6 +52,22 @@ const AdminDashboard = () => {
     admin?.displayName || admin?.name || admin?.username || "Admin";
   const profileImage =
     admin?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+  const barStatsData = stats
+    ? [
+        { name: "Users", value: stats.totalUsers },
+        { name: "Books", value: stats.totalBooks },
+        { name: "Borrowed", value: stats.borrowedBooks },
+        { name: "Returned", value: stats.returnedBooks },
+      ]
+    : [];
+
+  const borrowReturnData = stats
+    ? [
+        { name: "Borrowed", value: stats.borrowedBooks },
+        { name: "Returned", value: stats.returnedBooks },
+      ]
+    : [];
 
   const renderMainContent = () => {
     switch (selectedSection) {
@@ -33,13 +78,55 @@ const AdminDashboard = () => {
       case "dashboard":
       default:
         return (
-          <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-4xl mx-auto">
+          <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-6xl mx-auto">
             <h1 className="text-3xl font-bold text-center text-orange-800 mb-2">
               Admin Dashboard
             </h1>
-            <p className="text-lg font-medium text-gray-600 text-center">
+            <p className="text-lg font-medium text-gray-600 text-center mb-6">
               Welcome back, {displayName}! Use the sidebar to manage books.
             </p>
+
+            {stats ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-orange-100 p-4 rounded-xl shadow">
+                  <h2 className="text-xl font-semibold text-orange-800 mb-2">
+                    Library Stats Overview
+                  </h2>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={barStatsData}>
+                      <XAxis dataKey="name" />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Bar
+                        dataKey="value"
+                        fill="#FF7F50"
+                        radius={[5, 5, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                <div className="bg-orange-100 p-4 rounded-xl shadow">
+                  <h2 className="text-xl font-semibold text-orange-800 mb-2">
+                    Borrowed vs Returned Books
+                  </h2>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={borrowReturnData}>
+                      <XAxis dataKey="name" />
+                      <YAxis allowDecimals={false} />
+                      <Tooltip />
+                      <Bar
+                        dataKey="value"
+                        fill="#00C49F"
+                        radius={[5, 5, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            ) : (
+              <p className="text-center text-gray-500">Loading stats...</p>
+            )}
           </div>
         );
     }
