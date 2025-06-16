@@ -160,7 +160,7 @@ const ViewBooks = ({ filters = {} }) => {
   }
 
   return (
-    <div className="p-6">
+    <div className="px-4 sm:px-6 py-6">
       <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">All Books</h1>
       {filteredBooks.length === 0 ? (
         <p className="text-center text-gray-600 font-medium">
@@ -178,12 +178,13 @@ const ViewBooks = ({ filters = {} }) => {
                 className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative"
               >
                 <div className="flex flex-col">
-                  <div className="flex items-start gap-4 mb-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
                     <img
                       src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
                       alt={book.title}
-                      className="w-32 h-32 object-cover rounded"
+                      className="w-full sm:w-32 sm:h-32 object-cover rounded"
                     />
+
                     <div className="flex flex-col justify-start">
                       <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
                       <p className="text-gray-600">Author: {book.author}</p>
@@ -196,14 +197,14 @@ const ViewBooks = ({ filters = {} }) => {
                   <p className="text-gray-600">ISBN: {book.isbn}</p>
                   <p className="text-gray-600">Genre: {book.genre}</p>
                   <p className="text-gray-600">Price: ₹{book.price}</p>
-                  <p className="text-gray-600 mb-2">Description: {book.description}</p>
+                  <p className="text-gray-600 mb-2 line-clamp-4">Description: {book.description}</p>
                   <p className="text-sm text-gray-500">
                     Added on: {new Date(book.createdAt).toLocaleString()}
                   </p>
                 </div>
 
                 {userRole === "admin" && (
-                  <div className="absolute bottom-3 right-3 flex gap-4">
+                  <div className="mt-4 flex justify-end gap-4 sm:absolute sm:bottom-3 sm:right-3">
                     <button
                       onClick={() => handleEdit(book)}
                       className="text-orange-500 hover:text-orange-700 transition"
