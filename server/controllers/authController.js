@@ -232,3 +232,41 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+//  promote user to admin
+export const promoteUserToAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    user.role = "admin";
+    await user.save();
+
+    res.json({ msg: `${user.username} has been promoted to admin.` });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};
+
+// demote admin to user
+export const demoteAdminToUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    if (user.role !== "admin") {
+      return res.status(400).json({ msg: "User is not an admin." });
+    }
+
+    user.role = "user";
+    await user.save();
+
+    res.json({ msg: `${user.username} has been demoted to user.` });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+};

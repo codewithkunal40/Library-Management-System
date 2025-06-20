@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +42,60 @@ const AdminDashboard = () => {
 
     if (admin) fetchStats();
   }, [admin]);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("/api/admin/users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Failed to fetch users", err);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedSection === "manage-users") {
+      fetchUsers();
+    }
+  }, [selectedSection]);
+
+  const handlePromote = async (id) => {
+    try {
+      const res = await fetch(`/api/admin/promote/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await res.json();
+      alert(data.msg);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error promoting user", error);
+    }
+  };
+
+  const handleDemote = async (id) => {
+    try {
+      const res = await fetch(`/api/admin/demote/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await res.json();
+      alert(data.msg);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error demoting admin", error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -75,6 +130,45 @@ const AdminDashboard = () => {
         return <ViewBooks />;
       case "add-books":
         return <AddBooks />;
+      case "manage-users":
+        return (
+          <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-6xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4 text-orange-800 text-center">
+              Manage Users
+            </h2>
+            {users.map((user) => (
+              <div
+                key={user._id}
+                className="flex justify-between items-center bg-orange-50 border p-4 rounded-lg mb-2"
+              >
+                <div>
+                  <p className="font-semibold">{user.fullName}</p>
+                  <p className="text-sm text-gray-600">Email: {user.email}</p>
+                  <p className="text-sm text-gray-600">Role: {user.role}</p>
+                </div>
+                {user._id !== admin.id && (
+                  <div className="space-x-2">
+                    {user.role === "admin" ? (
+                      <button
+                        onClick={() => handleDemote(user._id)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                      >
+                        Remove Admin
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handlePromote(user._id)}
+                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+                      >
+                        Promote to Admin
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
       case "dashboard":
       default:
         return (
@@ -171,6 +265,7 @@ const AdminDashboard = () => {
             >
               Add Books
             </button>
+
             <button
               onClick={() => setSelectedSection("view-books")}
               className={`w-full py-2 px-4 rounded-lg text-left font-semibold transition duration-200 ${
@@ -180,6 +275,17 @@ const AdminDashboard = () => {
               }`}
             >
               View Books
+            </button>
+
+            <button
+              onClick={() => setSelectedSection("manage-users")}
+              className={`w-full py-2 px-4 rounded-lg text-left font-semibold transition duration-200 ${
+                selectedSection === "manage-users"
+                  ? "bg-orange-500 text-white"
+                  : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+              }`}
+            >
+              Manage Users
             </button>
           </nav>
         </div>
