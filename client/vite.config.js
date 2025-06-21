@@ -12,5 +12,10 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    headers: {
+      // Allow popups from same-origin (required by Firebase popup)
+      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+    },
   },
 })

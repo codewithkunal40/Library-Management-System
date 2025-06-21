@@ -30,7 +30,12 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (data.token && data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
+        const userWithRole = {
+          ...data.user,
+          role: data.user.role || "user",
+        };
+
+        localStorage.setItem("user", JSON.stringify(userWithRole));
         localStorage.setItem("token", data.token);
 
         navigate("/user-dashboard");
