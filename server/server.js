@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import borrowRoutes from "./routes/borrowRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import fineRoutes from "./routes/borrowRoutes.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -42,6 +43,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/borrow", borrowRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api", borrowRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

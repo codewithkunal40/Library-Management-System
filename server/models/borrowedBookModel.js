@@ -6,6 +6,7 @@ const borrowedBookSchema = new mongoose.Schema({
   borrowDate: { type: Date, default: Date.now },
   returnDate: { type: Date },
   isReturned: { type: Boolean, default: false },
+  finePaid: { type: Boolean, default: false },
 });
 
 export default mongoose.model("BorrowedBook", borrowedBookSchema);

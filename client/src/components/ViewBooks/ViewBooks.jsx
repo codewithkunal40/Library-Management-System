@@ -27,9 +27,12 @@ const ViewBooks = ({ filters = {} }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
       try {
-        const response = await fetch("http://localhost:3000/api/borrow/my-books", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          "http://localhost:3000/api/borrow/my-books",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!response.ok) throw new Error("Failed to fetch borrowed books");
         const data = await response.json();
         setBorrowedBooks(data);
@@ -46,13 +49,16 @@ const ViewBooks = ({ filters = {} }) => {
         return;
       }
       try {
-        const response = await fetch("http://localhost:3000/api/books/get-book", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "http://localhost:3000/api/books/get-book",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) throw new Error("Failed to fetch books.");
         const data = await response.json();
         setBooks(data);
@@ -79,17 +85,24 @@ const ViewBooks = ({ filters = {} }) => {
   const handleBorrow = async (bookId) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`http://localhost:3000/api/borrow/borrow/${bookId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/borrow/borrow/${bookId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to borrow book");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to borrow book");
       toast.success(data.message);
-      setBorrowedBooks((prev) => [...prev, { bookId: { _id: bookId }, isReturned: false }]);
+      setBorrowedBooks((prev) => [
+        ...prev,
+        { bookId: { _id: bookId }, isReturned: false },
+      ]);
     } catch (err) {
       toast.error(err.message);
     }
@@ -98,16 +111,20 @@ const ViewBooks = ({ filters = {} }) => {
   const handleReturn = async (bookId) => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`http://localhost:3000/api/borrow/return/${bookId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/borrow/return/${bookId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to return book");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to return book");
 
       toast.success(data.message);
 
@@ -136,7 +153,8 @@ const ViewBooks = ({ filters = {} }) => {
         }
       );
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to delete book");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to delete book");
       toast.success(data.message);
       setBooks((prev) => prev.filter((book) => book._id !== deleteBook._id));
       setDeleteBook(null);
@@ -150,8 +168,12 @@ const ViewBooks = ({ filters = {} }) => {
   };
 
   const filteredBooks = books.filter((book) => {
-    const nameMatch = book.title.toLowerCase().includes(filters.name?.toLowerCase() || "");
-    const genreMatch = book.genre.toLowerCase().includes(filters.genre?.toLowerCase() || "");
+    const nameMatch = book.title
+      .toLowerCase()
+      .includes(filters.name?.toLowerCase() || "");
+    const genreMatch = book.genre
+      .toLowerCase()
+      .includes(filters.genre?.toLowerCase() || "");
     return nameMatch && genreMatch;
   });
 
@@ -161,7 +183,9 @@ const ViewBooks = ({ filters = {} }) => {
 
   return (
     <div className="px-4 sm:px-6 py-6">
-      <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">All Books</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center text-orange-500">
+        All Books
+      </h1>
       {filteredBooks.length === 0 ? (
         <p className="text-center text-gray-600 font-medium">
           No books found with the given filters.
@@ -180,24 +204,33 @@ const ViewBooks = ({ filters = {} }) => {
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
                     <img
-                      src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
+                      src={`http://localhost:3000/${book.coverImage.replace(
+                        /\\/g,
+                        "/"
+                      )}`}
                       alt={book.title}
                       className="w-full sm:w-32 sm:h-32 object-cover rounded"
                     />
 
                     <div className="flex flex-col justify-start">
-                      <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
+                      <h2 className="text-lg font-bold text-gray-800">
+                        {book.title}
+                      </h2>
                       <p className="text-gray-600">Author: {book.author}</p>
                       <p className="text-gray-600 flex items-center">
                         Rating: {renderStars(book.rating)}
-                        <span className="ml-2 text-sm text-gray-500">({book.rating}/5)</span>
+                        <span className="ml-2 text-sm text-gray-500">
+                          ({book.rating}/5)
+                        </span>
                       </p>
                     </div>
                   </div>
                   <p className="text-gray-600">ISBN: {book.isbn}</p>
                   <p className="text-gray-600">Genre: {book.genre}</p>
                   <p className="text-gray-600">Price: ₹{book.price}</p>
-                  <p className="text-gray-600 mb-2 line-clamp-4">Description: {book.description}</p>
+                  <p className="text-gray-600 mb-2 line-clamp-4">
+                    Description: {book.description}
+                  </p>
                   <p className="text-sm text-gray-500">
                     Added on: {new Date(book.createdAt).toLocaleString()}
                   </p>
@@ -250,7 +283,10 @@ const ViewBooks = ({ filters = {} }) => {
                           onClick={() => {
                             if (canViewPDF) {
                               window.open(
-                                `http://localhost:3000/${book.pdfPath.replace(/\\/g, "/")}`,
+                                `http://localhost:3000/${book.pdfPath.replace(
+                                  /\\/g,
+                                  "/"
+                                )}`,
                                 "_blank"
                               );
                             }
@@ -280,7 +316,9 @@ const ViewBooks = ({ filters = {} }) => {
           isOpen={!!editBook}
           onClose={() => setEditBook(null)}
           onSave={(updated) =>
-            setBooks((prev) => prev.map((b) => (b._id === updated._id ? updated : b)))
+            setBooks((prev) =>
+              prev.map((b) => (b._id === updated._id ? updated : b))
+            )
           }
         />
       )}
