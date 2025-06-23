@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import UserFines from "./UserFines";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import axios from "axios";
 
@@ -117,6 +118,7 @@ const UserDashboard = () => {
               Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
             </p>
             {renderStatsChart()}
+            <UserFines/>
           </div>
         );
     }

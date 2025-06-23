@@ -28,7 +28,7 @@ const ViewBooks = ({ filters = {} }) => {
       if (!token) return;
       try {
         const response = await fetch(
-          "http://localhost:3000/api/borrow/my-books",
+          "http://localhost:3000/api/borrow/borrowed",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
