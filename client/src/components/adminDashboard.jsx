@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBooks from "./AddBooks/AddBookForm";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import AdminFines from "./AdminFines";
 import {
   BarChart,
   Bar,
@@ -217,11 +218,15 @@ const AdminDashboard = () => {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                
               </div>
+              
             ) : (
               <p className="text-center text-gray-500">Loading stats...</p>
             )}
+            <AdminFines/>
           </div>
+          
         );
     }
   };

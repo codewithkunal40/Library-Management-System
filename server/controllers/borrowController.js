@@ -161,3 +161,37 @@ export const payFine = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// controllers/borrowController.js
+
+export const getAllUsersFines = async (req, res) => {
+  try {
+    const pendingBorrows = await BorrowedBook.find({
+      isReturned: false,
+      finePaid: false,
+    }).populate("userId").populate("bookId");
+
+    const userFinesMap = new Map();
+
+    for (const borrow of pendingBorrows) {
+      const fine = calculateFine(borrow.borrowDate);
+      if (fine <= 0) continue;
+
+      const userId = borrow.userId._id.toString();
+      const name = borrow.userId.name || borrow.userId.username || borrow.userId.email;
+
+      if (!userFinesMap.has(userId)) {
+        userFinesMap.set(userId, { userId, name, totalFine: 0 });
+      }
+
+      userFinesMap.get(userId).totalFine += fine;
+    }
+
+    const result = Array.from(userFinesMap.values());
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.error("Error fetching all user fines:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
