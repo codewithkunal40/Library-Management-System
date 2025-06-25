@@ -12,6 +12,7 @@ const AgePage = () => {
         <div className="w-full h-[45vh] relative">
             <img
             src="https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg"
+            crossOrigin="anonymous"
             alt="Background"
             className="w-full h-full object-cover"
             />

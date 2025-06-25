@@ -87,6 +87,7 @@ const LoginPage = () => {
       <div className="relative w-full h-[31vh]">
         <img
           src="https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg"
+          crossOrigin="anonymous"
           alt="Library"
           className="w-full h-full object-cover"
         />
@@ -141,6 +142,7 @@ const LoginPage = () => {
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+            crossOrigin="anonymous"
             alt="Google Logo"
             className="h-5 w-5"
           />

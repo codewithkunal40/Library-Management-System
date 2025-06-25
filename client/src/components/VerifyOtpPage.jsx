@@ -70,6 +70,7 @@ function VerifyOtpPage() {
             <div className="relative w-full h-[28vh]">
                 <img
                     src="https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg"
+                    crossOrigin="anonymous"
                     alt="Library"
                     className="w-full h-full object-cover"
                 />

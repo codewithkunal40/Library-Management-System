@@ -31,6 +31,7 @@ const WelcomePage = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-white animate-fadeIn">
         <img
           src="https://res.cloudinary.com/dhtl10m17/image/upload/v1746200403/ebook_logo_1_dtzq3j.png"
+          crossOrigin="anonymous"
           alt="Splash"
           className="w-3/4 max-w-xs mb-4"
         />
@@ -44,6 +45,7 @@ const WelcomePage = () => {
       <div className="relative w-full h-[45vh]">
         <img
           src="https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg"
+          crossOrigin="anonymous"
           alt="Library"
           className="w-full h-full object-cover"
         />
@@ -87,6 +89,7 @@ const WelcomePage = () => {
         >
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+            crossOrigin="anonymous"
             alt="Google Logo"
             className="h-5 w-5"
           />
