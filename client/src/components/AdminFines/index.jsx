@@ -22,7 +22,7 @@ const AdminFines = () => {
 
   return (
     <div className="p-4 bg-white shadow rounded-lg">
-      <h2 className="text-xl font-bold mb-4">All Users with Fines</h2>
+      <h2 className="text-xl font-bold mb-4 text-center">User Fine Records </h2>
       <table className="w-full table-auto border-collapse border border-gray-300">
         <thead>
           <tr className="bg-orange-100">
