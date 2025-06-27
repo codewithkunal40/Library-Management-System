@@ -204,14 +204,11 @@ const ViewBooks = ({ filters = {} }) => {
                 <div className="flex flex-col">
                   <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
                     <img
-                      src={`http://localhost:3000/${book.coverImage.replace(
-                        /\\/g,
-                        "/"
-                      )}`}
+                      src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
                       alt={book.title}
+                      crossOrigin="anonymous"
                       className="w-full sm:w-32 sm:h-32 object-cover rounded"
                     />
-
                     <div className="flex flex-col justify-start">
                       <h2 className="text-lg font-bold text-gray-800">
                         {book.title}

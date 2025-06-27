@@ -240,6 +240,7 @@ const AdminDashboard = () => {
               src={profileImage}
               alt="Admin Profile"
               className="w-24 h-24 rounded-full border-4 border-orange-300 object-cover"
+              crossOrigin="anonymous"
             />
             <h2 className="mt-3 text-xl font-bold">{displayName}</h2>
             <p className="text-sm text-gray-500 mt-1 font-semibold">

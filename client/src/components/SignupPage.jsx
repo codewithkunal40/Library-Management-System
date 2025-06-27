@@ -238,6 +238,7 @@ export default function SignupPage() {
                 src={preview}
                 alt="Profile Preview"
                 className="w-full h-full object-cover"
+                crossOrigin="anonymous"
               />
             ) : (
               <div className="w-full h-full bg-orange-50 flex items-center justify-center text-orange-500">
