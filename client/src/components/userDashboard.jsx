@@ -163,9 +163,10 @@ const UserDashboard = () => {
     <div className="flex flex-row">
       {/* Sidebar */}
       <aside
-        className={`bg-white shadow-xl w-72 h-screen md:relative absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:flex md:flex-col p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
+        className={`bg-white shadow-xl w-72 h-screen
+          absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
       >
         <div className="flex flex-col justify-between h-full">
           <div>
@@ -217,7 +218,7 @@ const UserDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
         {renderMainContent()}
       </main>
     </div>
