@@ -119,7 +119,7 @@ const UserDashboard = () => {
               Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
             </p>
             {renderStatsChart()}
-            <UserFines/>
+            <UserFines userId={user?._id} token={localStorage.getItem("token")} />
           </div>
         );
     }
