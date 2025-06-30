@@ -9,17 +9,12 @@ const ViewBooks = ({ filters = {} }) => {
   const [, setError] = useState("");
   const [editBook, setEditBook] = useState(null);
   const [deleteBook, setDeleteBook] = useState(null);
-  const [userRole, setUserRole] = useState(""); // Initially empty
+  const [userRole, setUserRole] = useState("");
   const [borrowedBooks, setBorrowedBooks] = useState([]);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser?.role) {
-      setUserRole(storedUser.role);
-    } else {
-      // Default to user if no role found (like in Google login)
-      setUserRole("user");
-    }
+    setUserRole(storedUser?.role || "user");
   }, []);
 
   useEffect(() => {
@@ -52,7 +47,6 @@ const ViewBooks = ({ filters = {} }) => {
         const response = await fetch(
           "http://localhost:3000/api/books/get-book",
           {
-            method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
@@ -72,15 +66,12 @@ const ViewBooks = ({ filters = {} }) => {
     fetchBooks();
   }, []);
 
-  const isBookBorrowed = (bookId) => {
-    return borrowedBooks.some(
+  const isBookBorrowed = (bookId) =>
+    borrowedBooks.some(
       (b) => (b.bookId?._id || b.bookId) === bookId && !b.isReturned
     );
-  };
 
-  const hasAccessToPDF = (bookId) => {
-    return isBookBorrowed(bookId);
-  };
+  const hasAccessToPDF = (bookId) => isBookBorrowed(bookId);
 
   const handleBorrow = async (bookId) => {
     const token = localStorage.getItem("token");
@@ -121,13 +112,11 @@ const ViewBooks = ({ filters = {} }) => {
           },
         }
       );
-
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.message || "Failed to return book");
 
       toast.success(data.message);
-
       setBorrowedBooks((prev) =>
         prev.map((b) => {
           const bId = b.bookId?._id || b.bookId;
@@ -135,7 +124,6 @@ const ViewBooks = ({ filters = {} }) => {
         })
       );
     } catch (err) {
-      console.error("Return Book Error:", err);
       toast.error(err.message);
     }
   };
@@ -147,9 +135,7 @@ const ViewBooks = ({ filters = {} }) => {
         `http://localhost:3000/api/books/delete-book/${deleteBook._id}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       const data = await response.json();
@@ -163,9 +149,7 @@ const ViewBooks = ({ filters = {} }) => {
     }
   };
 
-  const handleEdit = (book) => {
-    setEditBook(book);
-  };
+  const handleEdit = (book) => setEditBook(book);
 
   const filteredBooks = books.filter((book) => {
     const nameMatch = book.title
@@ -202,14 +186,17 @@ const ViewBooks = ({ filters = {} }) => {
                 className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative"
               >
                 <div className="flex flex-col">
-                  <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 mb-4 min-h-[160px]">
                     <img
-                      src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
+                      src={`http://localhost:3000/${book.coverImage.replace(
+                        /\\/g,
+                        "/"
+                      )}`}
                       alt={book.title}
                       crossOrigin="anonymous"
-                      className="w-full sm:w-32 sm:h-32 object-cover rounded"
+                      className="w-full sm:w-32 h-full object-cover rounded"
                     />
-                    <div className="flex flex-col justify-start">
+                    <div className="flex flex-col justify-start gap-1">
                       <h2 className="text-lg font-bold text-gray-800">
                         {book.title}
                       </h2>
@@ -220,16 +207,23 @@ const ViewBooks = ({ filters = {} }) => {
                           ({book.rating}/5)
                         </span>
                       </p>
+                      <p className="text-gray-600">ISBN: {book.isbn}</p>
+                      <p className="text-gray-600">Genre: {book.genre}</p>
+                      <p className="text-gray-600">Price: ₹{book.price}</p>
                     </div>
                   </div>
-                  <p className="text-gray-600">ISBN: {book.isbn}</p>
-                  <p className="text-gray-600">Genre: {book.genre}</p>
-                  <p className="text-gray-600">Price: ₹{book.price}</p>
-                  <p className="text-gray-600 mb-2 line-clamp-4">
+
+                  <p className="text-gray-600 mb-2 font-bold line-clamp-4">
                     Description: {book.description}
                   </p>
-                  <p className="text-sm text-gray-500">
+
+                  <p className="text-sm text-gray-500 flex items-center gap-2">
                     Added on: {new Date(book.createdAt).toLocaleString()}
+                    {isRecentlyAdded(book.createdAt) && (
+                      <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                        Recently Added
+                      </span>
+                    )}
                   </p>
                 </div>
 
@@ -332,10 +326,18 @@ const ViewBooks = ({ filters = {} }) => {
 
 export default ViewBooks;
 
-const renderStars = (rating) => {
-  return [...Array(5)].map((_, i) => (
+// book added within a month
+const isRecentlyAdded = (createdAt) => {
+  const createdDate = new Date(createdAt);
+  const now = new Date();
+  const diffInMs = now - createdDate;
+  const daysInMs = 30 * 24 * 60 * 60 * 1000;
+  return diffInMs <= daysInMs;
+};
+
+const renderStars = (rating) =>
+  [...Array(5)].map((_, i) => (
     <span key={i} className={i < rating ? "text-yellow-400" : "text-gray-300"}>
       ★
     </span>
   ));
-};
