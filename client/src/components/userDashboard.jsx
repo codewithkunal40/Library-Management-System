@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
 import UserFines from "./UserFines";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 import axios from "axios";
 
 const UserDashboard = () => {
@@ -22,9 +30,14 @@ const UserDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/books/dashboard-stats", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
+        const res = await axios.get(
+          "http://localhost:3000/api/books/dashboard-stats",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setStats(res.data);
       } catch (err) {
         console.error("Error fetching stats:", err);
@@ -116,115 +129,114 @@ const UserDashboard = () => {
               User Dashboard
             </h1>
             <p className="text-gray-700 text-center font-medium">
-              Welcome back, {displayName}! Use sidebar for borrowing and searching books 👍
+              Welcome back, {displayName}! Use sidebar for borrowing and
+              searching books 👍
             </p>
             {renderStatsChart()}
-            <UserFines userId={user?._id} token={localStorage.getItem("token")} />
+            <UserFines
+              userId={user?._id}
+              token={localStorage.getItem("token")}
+            />
           </div>
         );
     }
   };
 
   return user ? (
-  <div className="min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 relative">
-    
-    {/* Mobile Header */}
-    <div className="md:hidden flex items-center justify-between bg-orange-200 p-4 shadow">
-      <h1 className="text-xl font-bold text-orange-800">User Dashboard</h1>
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="text-orange-700 focus:outline-none"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+    <div className="min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 relative">
+      <div className="md:hidden flex items-center justify-between bg-orange-200 p-4 shadow">
+        <h1 className="text-xl font-bold text-orange-800">User Dashboard</h1>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="text-orange-700 focus:outline-none"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
-    </div>
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
 
-    {/* Overlay when sidebar open on mobile */}
-    {isSidebarOpen && (
-      <div
-        className="fixed inset-0 bg-white/30 backdrop-blur-sm z-10 md:hidden"
-        onClick={() => setIsSidebarOpen(false)}
-      />
-    )}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-white/30 backdrop-blur-sm z-10 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-    {/* Sidebar and Main Content Wrapper */}
-    <div className="flex flex-row">
-      {/* Sidebar */}
-      <aside
-        className={`bg-white shadow-xl w-72 h-screen
+      <div className="flex flex-row">
+        <aside
+          className={`bg-white shadow-xl w-72 h-screen
           absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
-      >
-        <div className="flex flex-col justify-between h-full">
-          <div>
-            <div className="flex flex-col items-center mb-6">
-              <img
-                src={profileImage}
-                alt="Profile"
-                className="w-24 h-24 rounded-full border-4 border-white shadow mb-2 object-cover"
-                crossOrigin="anonymous"
-              />
-              <h2 className="text-xl font-bold text-center">{displayName}</h2>
-              <p className="text-sm text-gray-500 text-center">{user?.email}</p>
+        >
+          <div className="flex flex-col justify-between h-full">
+            <div>
+              <div className="flex flex-col items-center mb-6">
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full border-4 border-white shadow mb-2 object-cover"
+                  crossOrigin="anonymous"
+                />
+                <h2 className="text-xl font-bold text-center">{displayName}</h2>
+                <p className="text-sm text-gray-500 text-center">
+                  {user?.email}
+                </p>
+              </div>
+
+              <nav className="mt-8">
+                <ul className="space-y-2">
+                  {["home", "view-books", "search-books"].map((section) => (
+                    <li key={section}>
+                      <button
+                        onClick={() => {
+                          setSelectedSection(section);
+                          setIsSidebarOpen(false);
+                        }}
+                        className={`block w-full ${
+                          selectedSection === section
+                            ? "bg-orange-500 text-white"
+                            : "bg-orange-100 text-gray-800 hover:bg-orange-200"
+                        } font-semibold py-2 px-4 rounded-lg text-start transition duration-200`}
+                      >
+                        {section === "home"
+                          ? "Home"
+                          : section === "view-books"
+                          ? "View All Books"
+                          : "Search Books"}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
 
-            <nav className="mt-8">
-              <ul className="space-y-2">
-                {["home", "view-books", "search-books"].map((section) => (
-                  <li key={section}>
-                    <button
-                      onClick={() => {
-                        setSelectedSection(section);
-                        setIsSidebarOpen(false);
-                      }}
-                      className={`block w-full ${
-                        selectedSection === section
-                          ? "bg-orange-500 text-white"
-                          : "bg-orange-100 text-gray-800 hover:bg-orange-200"
-                      } font-semibold py-2 px-4 rounded-lg text-start transition duration-200`}
-                    >
-                      {section === "home"
-                        ? "Home"
-                        : section === "view-books"
-                        ? "View All Books"
-                        : "Search Books"}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+            <button
+              onClick={handleLogout}
+              className="bg-orange-500 hover:bg-orange-400 text-white font-semibold py-2 rounded-lg transition duration-200 mt-6"
+            >
+              Logout
+            </button>
           </div>
+        </aside>
 
-          <button
-            onClick={handleLogout}
-            className="bg-orange-500 hover:bg-orange-400 text-white font-semibold py-2 rounded-lg transition duration-200 mt-6"
-          >
-            Logout
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
-        {renderMainContent()}
-      </main>
+        <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
+          {renderMainContent()}
+        </main>
+      </div>
     </div>
-  </div>
-) : null;
-
+  ) : null;
 };
 
 export default UserDashboard;
