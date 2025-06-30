@@ -26,21 +26,21 @@ const AdminFines = () => {
   
   <table className="min-w-full table-auto border-collapse text-sm md:text-base">
     <thead>
-      <tr className="bg-orange-100 text-gray-800">
-        <th className="border border-gray-300 px-4 py-3 text-left">Name</th>
-        <th className="border border-gray-300 px-4 py-3 text-left">User ID</th>
-        <th className="border border-gray-300 px-4 py-3 text-left">Total Fine (₹)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {userFines.map((user) => (
-        <tr key={user.userId} className="hover:bg-orange-50">
-          <td className="border border-gray-200 px-4 py-3">{user.name}</td>
-          <td className="border border-gray-200 px-4 py-3">{user.userId}</td>
-          <td className="border border-gray-200 px-4 py-3 text-red-600 font-medium">{user.totalFine}</td>
-        </tr>
-      ))}
-    </tbody>
+  <tr className="bg-orange-100 text-gray-800">
+    <th className="border border-gray-300 px-4 py-3 text-left">Full Name</th>
+    <th className="border border-gray-300 px-4 py-3 text-left">Username</th>
+    <th className="border border-gray-300 px-4 py-3 text-left">Total Fine (₹)</th>
+  </tr>
+</thead>
+<tbody>
+  {userFines.map((user) => (
+    <tr key={user.userId} className="hover:bg-orange-50">
+      <td className="border border-gray-200 px-4 py-3">{user.fullName}</td>
+      <td className="border border-gray-200 px-4 py-3">{user.username}</td>
+      <td className="border border-gray-200 px-4 py-3 text-red-600 font-medium">{user.totalFine}</td>
+    </tr>
+  ))}
+</tbody>
   </table>
 </div>
 

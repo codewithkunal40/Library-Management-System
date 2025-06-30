@@ -25,5 +25,4 @@ router.post("/pay-fine/:borrowId", verifyToken, payFine);
 // Only accessible by admin
 router.get("/all-fines", verifyToken, getAllUsersFines);
 
-
 export default router;

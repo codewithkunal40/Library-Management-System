@@ -163,13 +163,14 @@ export const payFine = async (req, res) => {
 };
 
 // controllers/borrowController.js
-
 export const getAllUsersFines = async (req, res) => {
   try {
     const pendingBorrows = await BorrowedBook.find({
       isReturned: false,
       finePaid: false,
-    }).populate("userId").populate("bookId");
+    })
+      .populate({ path: "userId", select: "fullName username email" })
+      .populate("bookId");
 
     const userFinesMap = new Map();
 
@@ -178,18 +179,17 @@ export const getAllUsersFines = async (req, res) => {
       if (fine <= 0) continue;
 
       const userId = borrow.userId._id.toString();
-      const name = borrow.userId.name || borrow.userId.username || borrow.userId.email;
+      const fullName = borrow.userId.fullName || "N/A";
+      const username = borrow.userId.username || borrow.userId.email || "N/A";
 
       if (!userFinesMap.has(userId)) {
-        userFinesMap.set(userId, { userId, name, totalFine: 0 });
+        userFinesMap.set(userId, { userId, fullName, username, totalFine: 0 });
       }
 
       userFinesMap.get(userId).totalFine += fine;
     }
 
-    const result = Array.from(userFinesMap.values());
-
-    res.status(200).json(result);
+    res.status(200).json(Array.from(userFinesMap.values()));
   } catch (err) {
     console.error("Error fetching all user fines:", err);
     res.status(500).json({ message: err.message });
