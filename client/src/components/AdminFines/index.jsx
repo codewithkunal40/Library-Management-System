@@ -22,7 +22,7 @@ const AdminFines = () => {
 
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-white shadow-lg rounded-2xl overflow-x-auto">
-  <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">User Fine Records</h2>
+  <h2 className="text-2xl font-semibold mb-6 text-center text-orange-500">User Fine Records</h2>
   
   <table className="min-w-full table-auto border-collapse text-sm md:text-base">
     <thead>
