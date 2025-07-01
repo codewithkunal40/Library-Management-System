@@ -6,7 +6,7 @@ import {
   viewBookPDF,
   getUserFines,
   payFine,
-  getAllUsersFines
+  getAllUsersFines,
 } from "../controllers/borrowController.js";
 
 import { verifyToken } from "../middleware/authMiddleware.js";

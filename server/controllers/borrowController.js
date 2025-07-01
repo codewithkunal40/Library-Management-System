@@ -17,12 +17,10 @@ export const borrowBook = async (req, res) => {
     });
 
     if (unpaidFineBorrow && calculateFine(unpaidFineBorrow.borrowDate) > 0) {
-      return res
-        .status(403)
-        .json({
-          message:
-            "You have unpaid fines. Please pay before borrowing new books.",
-        });
+      return res.status(403).json({
+        message:
+          "You have unpaid fines. Please pay before borrowing new books.",
+      });
     }
 
     // Block if already borrowed this book

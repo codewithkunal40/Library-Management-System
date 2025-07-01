@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
 import UserFines from "./UserFines";
+import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -11,7 +12,110 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import axios from "axios";
+
+const MyLibrary = () => {
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchBorrowedBooks = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:3000/api/borrow/borrowed", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const currentlyBorrowed = res.data.filter((b) => !b.isReturned);
+      setBorrowedBooks(currentlyBorrowed);
+    } catch (err) {
+      console.error(
+        "Error fetching borrowed books:",
+        err?.response?.data || err.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBorrowedBooks();
+  }, []);
+
+  const handleViewPDF = async (bookId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        `http://localhost:3000/api/borrow/pdf/${bookId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob",
+        }
+      );
+
+      const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+      window.open(pdfUrl, "_blank");
+    } catch (error) {
+      console.error(
+        "Error opening PDF:",
+        error?.response?.data || error.message
+      );
+      alert("Failed to open PDF. You may not have access.");
+    }
+  };
+
+  return (
+    <div className="p-4">
+      <h2 className="text-xl text-center text-orange-500 font-bold mb-4">
+        My Library / Currently Borrowed Books
+      </h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : borrowedBooks.length === 0 ? (
+        <p>You haven’t borrowed any books currently.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {borrowedBooks.map((borrow) => {
+            const book = borrow.bookId;
+            const hoursPassed = Math.floor(
+              (new Date() - new Date(borrow.borrowDate)) / (1000 * 60 * 60)
+            );
+            const fine = hoursPassed > 1 ? hoursPassed * 10 : 0;
+
+            return (
+              <div
+                key={borrow._id}
+                className="p-4 border rounded shadow bg-white flex flex-col justify-between"
+              >
+                <div>
+                  <h3 className="text-lg font-semibold">{book.title}</h3>
+                  <p>Author: {book.author}</p>
+                  <p>
+                    Borrowed On: {new Date(borrow.borrowDate).toLocaleString()}
+                  </p>
+                  <p className="text-yellow-700 font-medium">
+                    Status: Borrowed
+                  </p>
+                  {fine > 0 && (
+                    <p className="text-red-500 font-medium">Fine: ₹{fine}</p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 mt-3">
+                  {book.pdfPath && (
+                    <button
+                      onClick={() => handleViewPDF(book._id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                    >
+                      View PDF
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
@@ -54,7 +158,6 @@ const UserDashboard = () => {
 
   const displayName =
     user?.displayName || user?.name || user?.username || "User";
-
   const profileImage = user?.profilePic
     ? `http://localhost:3000/uploads/profiles/${user.profilePic}`
     : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
@@ -121,6 +224,8 @@ const UserDashboard = () => {
             <ViewBooks filters={filters} showPdfButton userId={user?._id} />
           </div>
         );
+      case "my-library":
+        return <MyLibrary />;
       case "home":
       default:
         return (
@@ -175,10 +280,9 @@ const UserDashboard = () => {
 
       <div className="flex flex-row">
         <aside
-          className={`bg-white shadow-xl w-72 h-screen
-          absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform
-          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
+          className={`bg-white shadow-xl w-72 h-screen absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform
+            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
         >
           <div className="flex flex-col justify-between h-full">
             <div>
@@ -197,24 +301,25 @@ const UserDashboard = () => {
 
               <nav className="mt-8">
                 <ul className="space-y-2">
-                  {["home", "view-books", "search-books"].map((section) => (
-                    <li key={section}>
+                  {[
+                    { key: "home", label: "Home" },
+                    { key: "view-books", label: "View All Books" },
+                    { key: "search-books", label: "Search Books" },
+                    { key: "my-library", label: "My Library" },
+                  ].map((section) => (
+                    <li key={section.key}>
                       <button
                         onClick={() => {
-                          setSelectedSection(section);
+                          setSelectedSection(section.key);
                           setIsSidebarOpen(false);
                         }}
                         className={`block w-full ${
-                          selectedSection === section
+                          selectedSection === section.key
                             ? "bg-orange-500 text-white"
                             : "bg-orange-100 text-gray-800 hover:bg-orange-200"
                         } font-semibold py-2 px-4 rounded-lg text-start transition duration-200`}
                       >
-                        {section === "home"
-                          ? "Home"
-                          : section === "view-books"
-                          ? "View All Books"
-                          : "Search Books"}
+                        {section.label}
                       </button>
                     </li>
                   ))}
