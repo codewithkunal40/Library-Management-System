@@ -270,3 +270,32 @@ export const demoteAdminToUser = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
+
+// Get Member History
+export const getMemberHistory = async (req, res) => {
+  try {
+    const users = await User.find(); 
+
+    const memberHistory = await Promise.all(
+      users.map(async (user) => {
+        const borrowed = await BorrowedBook.find({ userId: user._id });
+        const returned = borrowed.filter((b) => b.isReturned).length;
+        const notReturned = borrowed.filter((b) => !b.isReturned).length;
+
+        return {
+          name: user.fullName,
+          email: user.email,
+          totalBorrowed: borrowed.length,
+          returned,
+          notReturned,
+        };
+      })
+    );
+
+    res.status(200).json(memberHistory);
+  } catch (error) {
+    res.status(500).json({ msg: "Failed to fetch member history", error: error.message });
+  }
+};
+
