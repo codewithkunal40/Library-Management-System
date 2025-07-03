@@ -1,7 +1,10 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBooks from "./AddBooks/AddBookForm";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import { AnimatePresence, motion } from "framer-motion";
+
 import AdminFines from "./AdminFines";
 import {
   BarChart,
@@ -136,6 +139,13 @@ const AdminDashboard = () => {
         { name: "Returned", value: stats.returnedBooks },
       ]
     : [];
+
+    const variants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
+
 
   const renderMainContent = () => {
     switch (selectedSection) {
@@ -335,8 +345,20 @@ const AdminDashboard = () => {
           </div>
         </aside>
         <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
-          {renderMainContent()}
-        </main>
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={selectedSection}
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+    >
+      {renderMainContent()}
+    </motion.div>
+  </AnimatePresence>
+</main>
+
       </div>
     </div>
   ) : null;
