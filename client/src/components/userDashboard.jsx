@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
 import UserFines from "./UserFines";
+import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import {
   BarChart,
@@ -203,6 +205,13 @@ const UserDashboard = () => {
     );
   };
 
+  
+    const variants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+};
+
   const renderMainContent = () => {
     switch (selectedSection) {
       case "view-books":
@@ -347,7 +356,18 @@ const UserDashboard = () => {
         </aside>
 
         <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
-          {renderMainContent()}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedSection}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+              {renderMainContent()}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>
