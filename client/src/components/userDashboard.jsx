@@ -52,7 +52,7 @@ const MyLibrary = () => {
 
       const pdfBlob = new Blob([res.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, "_blank");
+      window.location.href = pdfUrl;
     } catch (error) {
       console.error(
         "Error opening PDF:",

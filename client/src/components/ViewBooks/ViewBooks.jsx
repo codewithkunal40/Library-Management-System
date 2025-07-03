@@ -273,13 +273,10 @@ const ViewBooks = ({ filters = {} }) => {
                           disabled={!canViewPDF}
                           onClick={() => {
                             if (canViewPDF) {
-                              window.open(
-                                `http://localhost:3000/${book.pdfPath.replace(
-                                  /\\/g,
-                                  "/"
-                                )}`,
-                                "_blank"
-                              );
+                              window.location.href = `http://localhost:3000/${book.pdfPath.replace(
+                                /\\/g,
+                                "/"
+                              )}`;
                             }
                           }}
                           title={
