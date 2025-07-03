@@ -75,6 +75,17 @@ const MyLibrary = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {borrowedBooks.map((borrow) => {
             const book = borrow.bookId;
+            if (!book) {
+              return (
+                <div
+                  key={borrow._id}
+                  className="p-4 border rounded shadow bg-white flex flex-col justify-between"
+                >
+                  <p className="text-red-500">Book details are unavailable.</p>
+                </div>
+              );
+            }
+
             const hoursPassed = Math.floor(
               (new Date() - new Date(borrow.borrowDate)) / (1000 * 60 * 60)
             );
@@ -91,9 +102,7 @@ const MyLibrary = () => {
                   <p>
                     Borrowed On: {new Date(borrow.borrowDate).toLocaleString()}
                   </p>
-                  <p className="text-yellow-700 font-medium">
-                    Status: Borrowed
-                  </p>
+                  <p className="text-yellow-700 font-medium">Status: Borrowed</p>
                   {fine > 0 && (
                     <p className="text-red-500 font-medium">Fine: ₹{fine}</p>
                   )}
@@ -111,11 +120,12 @@ const MyLibrary = () => {
               </div>
             );
           })}
+
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  );
-};
+      );
+    };
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
