@@ -3,6 +3,7 @@ import { FaEdit, FaTrashAlt, FaFilePdf } from "react-icons/fa";
 import EditBookModal from "../EditBookModel/EditBookModal";
 import DeletePopup from "./DeletePopup";
 import { toast } from "react-toastify";
+import PDFViewerModal from "../PDFViewerModal"; 
 
 const ViewBooks = ({ filters = {} }) => {
   const [books, setBooks] = useState([]);
@@ -11,6 +12,10 @@ const ViewBooks = ({ filters = {} }) => {
   const [deleteBook, setDeleteBook] = useState(null);
   const [userRole, setUserRole] = useState("");
   const [borrowedBooks, setBorrowedBooks] = useState([]);
+
+  
+  const [showPDFModal, setShowPDFModal] = useState(false);
+  const [currentPDF, setCurrentPDF] = useState("");
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -273,10 +278,8 @@ const ViewBooks = ({ filters = {} }) => {
                           disabled={!canViewPDF}
                           onClick={() => {
                             if (canViewPDF) {
-                              window.location.href = `http://localhost:3000/${book.pdfPath.replace(
-                                /\\/g,
-                                "/"
-                              )}`;
+                              setCurrentPDF(book.pdfPath);
+                              setShowPDFModal(true);
                             }
                           }}
                           title={
@@ -317,13 +320,20 @@ const ViewBooks = ({ filters = {} }) => {
         onConfirm={confirmDelete}
         bookTitle={deleteBook?.title}
       />
+
+     
+      <PDFViewerModal
+        isOpen={showPDFModal}
+        onClose={() => setShowPDFModal(false)}
+        pdfPath={currentPDF}
+      />
     </div>
   );
 };
 
 export default ViewBooks;
 
-// book added within a month
+// Utility functions
 const isRecentlyAdded = (createdAt) => {
   const createdDate = new Date(createdAt);
   const now = new Date();
