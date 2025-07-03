@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import ViewBooks from "./ViewBooks/ViewBooks";
 import UserFines from "./UserFines";
@@ -78,6 +78,8 @@ const MyLibrary = () => {
           {borrowedBooks.map((borrow) => {
             const book = borrow.bookId;
             if (!book) {
+  // Optional: Send this info to your backend or log it for debugging
+              console.warn("Missing book reference in borrow record:", borrow);
               return (
                 <div
                   key={borrow._id}
@@ -174,10 +176,10 @@ const UserDashboard = () => {
     ? `http://localhost:3000/uploads/profiles/${user.profilePic}`
     : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  const handleSearchInputChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleSearchInputChange = useCallback((e) => {
+  const { name, value } = e.target;
+  setFilters((prev) => ({ ...prev, [name]: value }));
+}, []);
 
   const renderStatsChart = () => {
     if (!stats) return null;
