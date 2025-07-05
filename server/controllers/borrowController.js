@@ -43,8 +43,9 @@ export const borrowBook = async (req, res) => {
 
 // Return Book
 export const returnBook = async (req, res) => {
-  const userId = req.userId;
+  const userId = req.userId || req.user._id;
   const bookId = req.params.bookId;
+  const { rating } = req.body;
 
   try {
     const borrowRecord = await BorrowedBook.findOne({
@@ -52,27 +53,80 @@ export const returnBook = async (req, res) => {
       bookId,
       isReturned: false,
     });
-    if (!borrowRecord)
-      return res.status(400).json({ message: "No active borrow record found" });
 
+    if (!borrowRecord) {
+      return res.status(400).json({ message: "No active borrow record found" });
+    }
+
+    //  Mark as returned
     borrowRecord.isReturned = true;
     borrowRecord.returnDate = new Date();
     await borrowRecord.save();
 
-    res.status(200).json({ message: "Book returned successfully" });
+    let updatedBook = null;
+
+    // If rating is present, update the book's ratings array
+    if (rating && rating >= 1 && rating <= 5) {
+      const book = await Book.findById(bookId);
+      if (!book) return res.status(404).json({ message: "Book not found" });
+
+      // Check if user already rated
+      const existingRatingIndex = book.ratings.findIndex(
+        (r) => r.user.toString() === userId.toString()
+      );
+
+      if (existingRatingIndex !== -1) {
+        // Update rating
+        book.ratings[existingRatingIndex].rating = rating;
+      } else {
+        // Add new rating
+        book.ratings.push({ user: userId, rating });
+      }
+
+      // Recalculate average rating
+      const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+      book.averageRating = total / book.ratings.length;
+
+      await book.save();
+      updatedBook = book;
+    }
+
+    return res.status(200).json({
+      message: "Book returned successfully",
+      updatedBook,
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("Return Book Error:", err);
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
-// Get All Borrowed Books by User
+// Get All Borrowed Books by User (with userRating)
 export const getUserBorrowedBooks = async (req, res) => {
   try {
-    const books = await BorrowedBook.find({ userId: req.userId }).populate(
-      "bookId"
-    );
-    res.status(200).json(books);
+    const userId = req.userId;
+
+    const borrowedBooks = await BorrowedBook.find({ userId })
+      .populate("bookId")
+      .lean();
+
+    const updatedBorrowed = borrowedBooks.map((borrow) => {
+      const book = borrow.bookId;
+
+      // Find user rating from the book's ratings array
+      const userRatingEntry = book?.ratings?.find(
+        (r) => r.user.toString() === userId.toString()
+      );
+
+      return {
+        ...borrow,
+        userRating: userRatingEntry?.rating || null,
+      };
+    });
+
+    res.status(200).json(updatedBorrowed);
   } catch (err) {
+    console.error("getUserBorrowedBooks error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -160,7 +214,7 @@ export const payFine = async (req, res) => {
   }
 };
 
-// controllers/borrowController.js
+// all user fines
 export const getAllUsersFines = async (req, res) => {
   try {
     const pendingBorrows = await BorrowedBook.find({

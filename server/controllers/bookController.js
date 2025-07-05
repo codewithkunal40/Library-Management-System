@@ -168,3 +168,48 @@ export const getLibraryStats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch library stats" });
   }
 };
+
+// Rate a Book
+export const rateBook = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const { rating } = req.body;
+    const userId = req.user._id;
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res
+        .status(400)
+        .json({ message: "Invalid rating. Must be between 1 and 5." });
+    }
+
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    // Check if user has already rated
+    const existingRatingIndex = book.ratings.findIndex(
+      (r) => r.user.toString() === userId.toString()
+    );
+
+    if (existingRatingIndex !== -1) {
+      // Update rating
+      book.ratings[existingRatingIndex].rating = rating;
+    } else {
+      // Add new rating
+      book.ratings.push({ user: userId, rating });
+    }
+
+    // Recalculate average
+    const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+    book.averageRating = total / book.ratings.length;
+
+    await book.save();
+
+    res.status(200).json({
+      message: "Rating submitted successfully",
+      updatedBook: book,
+    });
+  } catch (error) {
+    console.error("Rate Book Error:", error);
+    res.status(500).json({ message: "Failed to rate book" });
+  }
+};

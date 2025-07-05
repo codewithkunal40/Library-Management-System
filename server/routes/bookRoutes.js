@@ -6,6 +6,7 @@ import {
   deleteBook,
   getLibraryStats,
 } from "../controllers/bookController.js";
+import { rateBook } from "../controllers/bookController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
 
@@ -40,5 +41,8 @@ router.delete("/delete-book/:id", protect, isAdmin, deleteBook);
 
 // Route for stats
 router.get("/dashboard-stats", protect, getLibraryStats);
+
+//  User submits book rating
+router.post("/rate-book/:id", protect, rateBook);
 
 export default router;
