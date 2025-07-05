@@ -12,35 +12,43 @@ const RatingModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-white bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-80">
-        <h2 className="text-xl font-semibold mb-4">Rate the Book</h2>
-        <div className="flex justify-center mb-4">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <span
-              key={star}
-              className={`text-3xl cursor-pointer ${
-                star <= rating ? "text-yellow-400" : "text-gray-300"
-              }`}
-              onClick={() => setRating(star)}
-            >
-              ★
-            </span>
-          ))}
-        </div>
-        <div className="flex justify-end gap-2">
-          <button onClick={onClose} className="px-3 py-1 border rounded">
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="px-3 py-1 bg-blue-500 text-white rounded"
-          >
-            Submit
-          </button>
-        </div>
-      </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-auto">
+  <div className="bg-white rounded-2xl shadow-2xl p-6 w-96 animate-fade-in border border-gray-200">
+    <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+      Rate the Book
+    </h2>
+
+    <div className="flex justify-center mb-6">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          onClick={() => setRating(star)}
+          className={`text-4xl mx-1 cursor-pointer transition-colors duration-200 ${
+            star <= rating ? "text-yellow-400" : "text-gray-300"
+          }`}
+        >
+          ★
+        </span>
+      ))}
     </div>
+
+    <div className="flex justify-end gap-3">
+      <button
+        onClick={onClose}
+        className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handleSubmit}
+        className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
   );
 };
 
