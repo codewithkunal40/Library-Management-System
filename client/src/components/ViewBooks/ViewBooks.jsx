@@ -140,6 +140,30 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     }
   };
 
+  const confirmDelete = async (book) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/books/delete-book/${book._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to delete book.");
+      }
+      toast.success(data.message || "Book deleted successfully!");
+      setBooks((prevBooks) => prevBooks.filter((b) => b._id !== book._id));
+      setDeleteBook(null);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
   let visibleBooks = books;
   if (mode === "borrowed") {
     const borrowedIds = borrowedBooks
@@ -157,6 +181,17 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
       .includes(filters.genre?.toLowerCase() || "");
     return nameMatch && genreMatch;
   });
+
+  const groupBooksByGenre = (books) => {
+    return books.reduce((acc, book) => {
+      const genre = book.genre || "Other";
+      if (!acc[genre]) acc[genre] = [];
+      acc[genre].push(book);
+      return acc;
+    }, {});
+  };
+
+  const groupedBooks = groupBooksByGenre(filteredBooks);
 
   if (!userRole)
     return <div className="text-center py-10 text-gray-500">Loading...</div>;
@@ -179,46 +214,49 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
             No books found with the given filters.
           </p>
         ) : (
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {filteredBooks.map((book) => {
-              const borrowed = isBookBorrowed(book._id);
-              const canViewPDF = hasAccessToPDF(book._id) && book.pdfPath;
-              const userRating = getUserRating(book._id);
+          Object.keys(groupedBooks).map((genre) => (
+            <div key={genre} className="mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-orange-600">
+                {genre}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {groupedBooks[genre].map((book) => {
+                  const borrowed = isBookBorrowed(book._id);
+                  const canViewPDF = hasAccessToPDF(book._id) && book.pdfPath;
+                  const userRating = getUserRating(book._id);
 
-              return (
-                <div
-                  key={book._id}
-                  className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative"
-                >
-                  {userRole === "admin" && (
-                    <div className="absolute bottom-3 right-3 flex gap-3">
-                      <button
-                        className="text-orange-500 hover:text-orange-700 text-xl"
-                        onClick={() => setEditBook(book)}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="text-orange-500 hover:text-orange-700 text-xl"
-                        onClick={() => setDeleteBook(book)}
-                      >
-                        <FaTrashAlt />
-                      </button>
-                    </div>
-                  )}
+                  return (
+                    <div
+                      key={book._id}
+                      className="bg-white shadow-md rounded-xl p-4 border border-gray-200 flex flex-col relative aspect-square"
+                    >
+                      {userRole === "admin" && (
+                        <div className="absolute bottom-3 right-3 flex gap-3">
+                          <button
+                            className="text-orange-500 hover:text-orange-700 text-xl"
+                            onClick={() => setEditBook(book)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="text-orange-500 hover:text-orange-700 text-xl"
+                            onClick={() => setDeleteBook(book)}
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                      )}
 
-                  <div className="flex flex-col">
-                    <div className="flex flex-col sm:flex-row items-start gap-4 mb-4 min-h-[160px]">
-                      <img
-                        src={`http://localhost:3000/${book.coverImage.replace(
-                          /\\/g,
-                          "/"
-                        )}`}
-                        alt={book.title}
-                        crossOrigin="anonymous"
-                        className="w-full sm:w-32 h-full object-cover rounded"
-                      />
-                      <div className="flex flex-col justify-start gap-1">
+                      <div className="flex flex-col">
+                        <img
+                          src={`http://localhost:3000/${book.coverImage.replace(
+                            /\\/g,
+                            "/"
+                          )}`}
+                          alt={book.title}
+                          crossOrigin="anonymous"
+                          className="w-full h-48 object-cover rounded mb-4"
+                        />
                         <h2 className="text-lg font-bold text-gray-800">
                           {book.title}
                         </h2>
@@ -229,7 +267,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                             ({book.rating?.toFixed(1) || 0}/5)
                           </span>
                         </p>
-
                         {userRole === "user" && (
                           <p className="text-gray-600 flex items-center">
                             User's Rating:{" "}
@@ -247,71 +284,69 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                             )}
                           </p>
                         )}
-
                         <p className="text-gray-600">ISBN: {book.isbn}</p>
                         <p className="text-gray-600">Genre: {book.genre}</p>
                         <p className="text-gray-600">Price: ₹{book.price}</p>
+
+                        <p className="text-gray-600 mt-2 line-clamp-4">
+                          Description: {book.description}
+                        </p>
+
+                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-2">
+                          Added on: {new Date(book.createdAt).toLocaleString()}
+                          {isRecentlyAdded(book.createdAt) && (
+                            <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              Recently Added
+                            </span>
+                          )}
+                        </p>
                       </div>
-                    </div>
 
-                    <p className="text-gray-600 mb-2 font-bold line-clamp-4">
-                      Description: {book.description}
-                    </p>
-
-                    <p className="text-sm text-gray-500 flex items-center gap-2">
-                      Added on: {new Date(book.createdAt).toLocaleString()}
-                      {isRecentlyAdded(book.createdAt) && (
-                        <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-                          Recently Added
-                        </span>
-                      )}
-                    </p>
-                  </div>
-
-                  {/* User Actions */}
-                  {userRole === "user" && (
-                    <div className="mt-3 space-y-2">
-                      {mode === "borrowed" ? (
-                        <>
-                          <button
-                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full"
-                            onClick={() => handleReturn(book._id)}
-                          >
-                            Return
-                          </button>
-                          <button
-                            className={`flex items-center justify-center gap-2 px-4 py-2 rounded w-full font-medium ${
-                              canViewPDF
-                                ? "bg-blue-500 hover:bg-blue-600 text-white"
-                                : "bg-gray-300 text-gray-600 cursor-not-allowed"
-                            }`}
-                            disabled={!canViewPDF}
-                            onClick={() => {
-                              if (canViewPDF) {
-                                setCurrentPDF(book.pdfPath);
-                                setShowPDFModal(true);
-                              }
-                            }}
-                          >
-                            <FaFilePdf />
-                            View PDF
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
-                          onClick={() => handleBorrow(book._id)}
-                          disabled={borrowed}
-                        >
-                          {borrowed ? "Borrowed" : "Borrow"}
-                        </button>
+                      {userRole === "user" && (
+                        <div className="mt-3 space-y-2">
+                          {mode === "borrowed" ? (
+                            <>
+                              <button
+                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full"
+                                onClick={() => handleReturn(book._id)}
+                              >
+                                Return
+                              </button>
+                              <button
+                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded w-full font-medium ${
+                                  canViewPDF
+                                    ? "bg-blue-500 hover:bg-blue-600 text-white"
+                                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                                }`}
+                                disabled={!canViewPDF}
+                                onClick={() => {
+                                  if (canViewPDF) {
+                                    setCurrentPDF(book.pdfPath);
+                                    setShowPDFModal(true);
+                                  }
+                                }}
+                              >
+                                <FaFilePdf />
+                                View PDF
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
+                              onClick={() => handleBorrow(book._id)}
+                              disabled={borrowed}
+                            >
+                              {borrowed ? "Borrowed" : "Borrow"}
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))
         )}
       </div>
 
@@ -324,7 +359,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
               pdfPath={currentPDF}
             />
           )}
-
           {showRatingModal && (
             <RatingModal
               isOpen={true}
