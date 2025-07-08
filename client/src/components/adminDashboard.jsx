@@ -19,6 +19,7 @@ const AdminDashboard = () => {
   const [admin, setAdmin] = useState(null);
   const [selectedSection, setSelectedSection] = useState("dashboard");
   const [stats, setStats] = useState(null);
+  const [borrowStats, setBorrowStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [memberHistory, setMemberHistory] = useState([]);
@@ -45,7 +46,24 @@ const AdminDashboard = () => {
       }
     };
 
-    if (admin) fetchStats();
+    const fetchBorrowStats = async () => {
+      try {
+        const res = await fetch("/api/borrow/admin/borrow-return-stats", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) setBorrowStats(data);
+      } catch (err) {
+        console.error("Failed to fetch borrow stats", err);
+      }
+    };
+
+    if (admin) {
+      fetchStats();
+      fetchBorrowStats();
+    }
   }, [admin]);
 
   const fetchUsers = async () => {
@@ -124,28 +142,28 @@ const AdminDashboard = () => {
   const profileImage =
     admin?.photoURL || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-  const barStatsData = stats
+  const barStatsData =
+    stats && borrowStats
+      ? [
+          { name: "Users", value: stats.totalUsers },
+          { name: "Books", value: stats.totalBooks },
+          { name: "Borrowed", value: borrowStats.totalBorrowed },
+          { name: "Returned", value: borrowStats.totalReturned },
+        ]
+      : [];
+
+  const borrowReturnData = borrowStats
     ? [
-        { name: "Users", value: stats.totalUsers },
-        { name: "Books", value: stats.totalBooks },
-        { name: "Borrowed", value: stats.borrowedBooks },
-        { name: "Returned", value: stats.returnedBooks },
+        { name: "Borrowed", value: borrowStats.totalBorrowed },
+        { name: "Returned", value: borrowStats.totalReturned },
       ]
     : [];
 
-  const borrowReturnData = stats
-    ? [
-        { name: "Borrowed", value: stats.borrowedBooks },
-        { name: "Returned", value: stats.returnedBooks },
-      ]
-    : [];
-
-    const variants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-};
-
+  const variants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
 
   const renderMainContent = () => {
     switch (selectedSection) {
@@ -205,9 +223,13 @@ const AdminDashboard = () => {
                     <th className="px-6 py-3 border">#</th>
                     <th className="px-6 py-3 border">Name</th>
                     <th className="px-6 py-3 border">Email</th>
-                    <th className="px-6 py-3 border text-center">Total Borrowed</th>
+                    <th className="px-6 py-3 border text-center">
+                      Total Borrowed
+                    </th>
                     <th className="px-6 py-3 border text-center">Returned</th>
-                    <th className="px-6 py-3 border text-center">Not Returned</th>
+                    <th className="px-6 py-3 border text-center">
+                      Not Returned
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -220,14 +242,23 @@ const AdminDashboard = () => {
                         <td className="px-6 py-3 border">{index + 1}</td>
                         <td className="px-6 py-3 border">{user.name}</td>
                         <td className="px-6 py-3 border">{user.email}</td>
-                        <td className="px-6 py-3 border text-center">{user.totalBorrowed}</td>
-                        <td className="px-6 py-3 border text-center">{user.returned}</td>
-                        <td className="px-6 py-3 border text-center">{user.notReturned}</td>
+                        <td className="px-6 py-3 border text-center">
+                          {user.totalBorrowed}
+                        </td>
+                        <td className="px-6 py-3 border text-center">
+                          {user.returned}
+                        </td>
+                        <td className="px-6 py-3 border text-center">
+                          {user.notReturned}
+                        </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="text-center py-4 text-gray-500">
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-gray-500"
+                      >
                         Loading or no data available...
                       </td>
                     </tr>
@@ -258,7 +289,11 @@ const AdminDashboard = () => {
                       <XAxis dataKey="name" />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Bar dataKey="value" fill="#FF7F50" radius={[5, 5, 0, 0]} />
+                      <Bar
+                        dataKey="value"
+                        fill="#FF7F50"
+                        radius={[5, 5, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -271,7 +306,11 @@ const AdminDashboard = () => {
                       <XAxis dataKey="name" />
                       <YAxis allowDecimals={false} />
                       <Tooltip />
-                      <Bar dataKey="value" fill="#00C49F" radius={[5, 5, 0, 0]} />
+                      <Bar
+                        dataKey="value"
+                        fill="#00C49F"
+                        radius={[5, 5, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -293,20 +332,43 @@ const AdminDashboard = () => {
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="text-orange-700 focus:outline-none"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
       </div>
       <div className="flex flex-col md:flex-row">
-        <aside className={`bg-white shadow-xl w-72 h-screen absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}>
+        <aside
+          className={`bg-white shadow-xl w-72 h-screen absolute top-0 left-0 z-30 transition-transform duration-300 ease-in-out transform ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 md:flex md:flex-col md:fixed md:top-0 md:left-0 p-6 md:rounded-tr-3xl md:rounded-br-3xl`}
+        >
           <div className="flex flex-col justify-between h-full">
             <div>
               <div className="flex flex-col items-center mb-8">
-                <img src={profileImage} alt="Admin Profile" className="w-24 h-24 rounded-full border-4 border-orange-300 object-cover" crossOrigin="anonymous" />
+                <img
+                  src={profileImage}
+                  alt="Admin Profile"
+                  className="w-24 h-24 rounded-full border-4 border-orange-300 object-cover"
+                  crossOrigin="anonymous"
+                />
                 <h2 className="mt-3 text-xl font-bold">{displayName}</h2>
-                <p className="text-sm text-gray-500 mt-1 font-semibold">Email: {admin.email}</p>
-                <p className="text-sm text-gray-500 font-semibold">Role: Admin</p>
+                <p className="text-sm text-gray-500 mt-1 font-semibold">
+                  Email: {admin.email}
+                </p>
+                <p className="text-sm text-gray-500 font-semibold">
+                  Role: Admin
+                </p>
               </div>
               <nav className="space-y-2">
                 {[
@@ -345,20 +407,19 @@ const AdminDashboard = () => {
           </div>
         </aside>
         <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen md:ml-72">
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={selectedSection}
-      variants={variants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.4, ease: "easeInOut" }}
-    >
-      {renderMainContent()}
-    </motion.div>
-  </AnimatePresence>
-</main>
-
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedSection}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+            >
+              {renderMainContent()}
+            </motion.div>
+          </AnimatePresence>
+        </main>
       </div>
     </div>
   ) : null;

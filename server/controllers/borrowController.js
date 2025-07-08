@@ -247,3 +247,19 @@ export const getAllUsersFines = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Admin Dashboard Stats (Borrowed vs Returned)
+export const getBorrowReturnStats = async (req, res) => {
+  try {
+    const totalBorrowed = await BorrowedBook.countDocuments(); // All borrow records
+    const totalReturned = await BorrowedBook.countDocuments({ isReturned: true });
+
+    res.status(200).json({
+      totalBorrowed,
+      totalReturned,
+    });
+  } catch (err) {
+    console.error("Error fetching borrow/return stats:", err);
+    res.status(500).json({ message: "Failed to fetch stats" });
+  }
+};

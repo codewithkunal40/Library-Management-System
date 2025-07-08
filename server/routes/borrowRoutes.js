@@ -7,6 +7,7 @@ import {
   getUserFines,
   payFine,
   getAllUsersFines,
+  getBorrowReturnStats,
 } from "../controllers/borrowController.js";
 
 import { verifyToken } from "../middleware/authMiddleware.js";
@@ -24,5 +25,8 @@ router.post("/pay-fine/:borrowId", verifyToken, payFine);
 
 // Only accessible by admin
 router.get("/all-fines", verifyToken, getAllUsersFines);
+
+// admin stats for borrowed vs returned
+router.get("/admin/borrow-return-stats", verifyToken, getBorrowReturnStats);
 
 export default router;
