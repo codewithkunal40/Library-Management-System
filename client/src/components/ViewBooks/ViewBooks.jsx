@@ -228,18 +228,19 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                   return (
                     <div
                       key={book._id}
-                      className="bg-white shadow-md rounded-xl p-4 border border-gray-200 flex flex-col relative aspect-square"
+                      className="bg-white shadow-md rounded-xl p-4 pb-7 border border-gray-200 flex flex-col relative"
                     >
+                      
                       {userRole === "admin" && (
                         <div className="absolute bottom-3 right-3 flex gap-3">
                           <button
-                            className="text-orange-500 hover:text-orange-700 text-xl"
+                            className="text-orange-500 hover:text-orange-700 text-sm"
                             onClick={() => setEditBook(book)}
                           >
                             <FaEdit />
                           </button>
                           <button
-                            className="text-orange-500 hover:text-orange-700 text-xl"
+                            className="text-orange-500 hover:text-orange-700 text-sm"
                             onClick={() => setDeleteBook(book)}
                           >
                             <FaTrashAlt />
@@ -247,61 +248,64 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         </div>
                       )}
 
-                      <div className="flex flex-col">
-                        <img
-                          src={`http://localhost:3000/${book.coverImage.replace(
-                            /\\/g,
-                            "/"
-                          )}`}
-                          alt={book.title}
-                          crossOrigin="anonymous"
-                          className="w-full h-48 object-cover rounded mb-4"
-                        />
-                        <h2 className="text-lg font-bold text-gray-800">
-                          {book.title}
-                        </h2>
-                        <p className="text-gray-600">Author: {book.author}</p>
+
+                    <div className="flex flex-col h-full">
+                      
+                      <img
+                        src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
+                        alt={book.title}
+                        crossOrigin="anonymous"
+                        className="w-full h-48 object-cover rounded mb-4"
+                      />
+
+                      
+                      <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
+                      <p className="text-gray-600">Author: {book.author}</p>
+                      <p className="text-gray-600 flex items-center">
+                        Rating: {renderStars(book.rating)}
+                        <span className="ml-2 text-sm text-gray-500">
+                          ({book.rating?.toFixed(1) || 0}/5)
+                        </span>
+                      </p>
+
+                      {userRole === "user" && (
                         <p className="text-gray-600 flex items-center">
-                          Rating: {renderStars(book.rating)}
-                          <span className="ml-2 text-sm text-gray-500">
-                            ({book.rating?.toFixed(1) || 0}/5)
-                          </span>
-                        </p>
-                        {userRole === "user" && (
-                          <p className="text-gray-600 flex items-center">
-                            User's Rating:{" "}
-                            {userRating ? (
-                              <>
-                                {renderStars(userRating)}
-                                <span className="ml-2 text-sm text-gray-500">
-                                  ({userRating.toFixed(1)}/5)
-                                </span>
-                              </>
-                            ) : (
-                              <span className="ml-2 text-sm italic font-bold text-gray-800">
-                                Unrated
+                          User's Rating:{" "}
+                          {userRating ? (
+                            <>
+                              {renderStars(userRating)}
+                              <span className="ml-2 text-sm text-gray-500">
+                                ({userRating.toFixed(1)}/5)
                               </span>
-                            )}
-                          </p>
-                        )}
-                        <p className="text-gray-600">ISBN: {book.isbn}</p>
-                        <p className="text-gray-600">Genre: {book.genre}</p>
-                        <p className="text-gray-600">Price: ₹{book.price}</p>
-
-                        <p className="text-gray-600 mt-2 line-clamp-4">
-                          Description: {book.description}
-                        </p>
-
-                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-2">
-                          Added on: {new Date(book.createdAt).toLocaleString()}
-                          {isRecentlyAdded(book.createdAt) && (
-                            <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-                              Recently Added
+                            </>
+                          ) : (
+                            <span className="ml-2 text-sm italic font-bold text-gray-800">
+                              Unrated
                             </span>
                           )}
                         </p>
-                      </div>
+                      )}
 
+                      <p className="text-gray-600">ISBN: {book.isbn}</p>
+                      <p className="text-gray-600">Genre: {book.genre}</p>
+                      <p className="text-gray-600">Price: ₹{book.price}</p>
+
+                      
+                      <p className="text-gray-600 mt-2 line-clamp-4 overflow-hidden">
+                        Description: {book.description}
+                      </p>
+
+                      
+                      <p className="text-xs text-gray-500 flex items-center gap-1 mt-2">
+                        Added on: {new Date(book.createdAt).toLocaleString()}
+                        {isRecentlyAdded(book.createdAt) && (
+                          <span className="bg-green-100 text-green-600 whitespace-nowrap px-2 py-0.5 rounded-full text-xs font-semibold">
+                            Recently Added
+                          </span>
+                        )}
+                      </p>
+
+                      
                       {userRole === "user" && (
                         <div className="mt-3 space-y-2">
                           {mode === "borrowed" ? (
@@ -342,6 +346,8 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         </div>
                       )}
                     </div>
+                  </div>
+
                   );
                 })}
               </div>
