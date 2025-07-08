@@ -190,6 +190,23 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                   key={book._id}
                   className="bg-white shadow-md rounded-xl p-4 border border-gray-200 relative"
                 >
+                  {userRole === "admin" && (
+                    <div className="absolute bottom-3 right-3 flex gap-3">
+                      <button
+                        className="text-orange-500 hover:text-orange-700 text-xl"
+                        onClick={() => setEditBook(book)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="text-orange-500 hover:text-orange-700 text-xl"
+                        onClick={() => setDeleteBook(book)}
+                      >
+                        <FaTrashAlt />
+                      </button>
+                    </div>
+                  )}
+
                   <div className="flex flex-col">
                     <div className="flex flex-col sm:flex-row items-start gap-4 mb-4 min-h-[160px]">
                       <img
@@ -251,6 +268,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                     </p>
                   </div>
 
+                  {/* User Actions */}
                   {userRole === "user" && (
                     <div className="mt-3 space-y-2">
                       {mode === "borrowed" ? (
@@ -280,15 +298,13 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                           </button>
                         </>
                       ) : (
-                        <>
-                          <button
-                            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
-                            onClick={() => handleBorrow(book._id)}
-                            disabled={borrowed}
-                          >
-                            {borrowed ? "Borrowed" : "Borrow"}
-                          </button>
-                        </>
+                        <button
+                          className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
+                          onClick={() => handleBorrow(book._id)}
+                          disabled={borrowed}
+                        >
+                          {borrowed ? "Borrowed" : "Borrow"}
+                        </button>
                       )}
                     </div>
                   )}
