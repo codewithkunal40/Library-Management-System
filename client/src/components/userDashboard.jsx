@@ -15,122 +15,6 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const MyLibrary = () => {
-  const [borrowedBooks, setBorrowedBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchBorrowedBooks = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get("http://localhost:3000/api/borrow/borrowed", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const currentlyBorrowed = res.data.filter((b) => !b.isReturned);
-      setBorrowedBooks(currentlyBorrowed);
-    } catch (err) {
-      console.error(
-        "Error fetching borrowed books:",
-        err?.response?.data || err.message
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBorrowedBooks();
-  }, []);
-
-  const handleViewPDF = async (bookId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `http://localhost:3000/api/borrow/pdf/${bookId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: "blob",
-        }
-      );
-
-      const pdfBlob = new Blob([res.data], { type: "application/pdf" });
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.location.href = pdfUrl;
-    } catch (error) {
-      console.error(
-        "Error opening PDF:",
-        error?.response?.data || error.message
-      );
-      alert("Failed to open PDF. You may not have access.");
-    }
-  };
-
-  return (
-    <div className="p-4">
-      <h2 className="text-xl text-center text-orange-500 font-bold mb-4">
-        My Library / Currently Borrowed Books
-      </h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : borrowedBooks.length === 0 ? (
-        <p>You haven’t borrowed any books currently.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {borrowedBooks.map((borrow) => {
-            const book = borrow.bookId;
-            if (!book) {
-  // Optional: Send this info to your backend or log it for debugging
-              console.warn("Missing book reference in borrow record:", borrow);
-              return (
-                <div
-                  key={borrow._id}
-                  className="p-4 border rounded shadow bg-white flex flex-col justify-between"
-                >
-                  <p className="text-red-500">Book details are unavailable.</p>
-                </div>
-              );
-            }
-
-            const hoursPassed = Math.floor(
-              (new Date() - new Date(borrow.borrowDate)) / (1000 * 60 * 60)
-            );
-            const fine = hoursPassed > 1 ? hoursPassed * 10 : 0;
-
-            return (
-              <div
-                key={borrow._id}
-                className="p-4 border rounded shadow bg-white flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-lg font-semibold">{book.title}</h3>
-                  <p>Author: {book.author}</p>
-                  <p>
-                    Borrowed On: {new Date(borrow.borrowDate).toLocaleString()}
-                  </p>
-                  <p className="text-yellow-700 font-medium">Status: Borrowed</p>
-                  {fine > 0 && (
-                    <p className="text-red-500 font-medium">Fine: ₹{fine}</p>
-                  )}
-                </div>
-                <div className="flex flex-col gap-2 mt-3">
-                  {book.pdfPath && (
-                    <button
-                      onClick={() => handleViewPDF(book._id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                    >
-                      View PDF
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-
-            </div>
-          )}
-        </div>
-      );
-    };
-
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
   const [selectedSection, setSelectedSection] = useState("home");
@@ -177,9 +61,9 @@ const UserDashboard = () => {
     : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
   const handleSearchInputChange = useCallback((e) => {
-  const { name, value } = e.target;
-  setFilters((prev) => ({ ...prev, [name]: value }));
-}, []);
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  }, []);
 
   const renderStatsChart = () => {
     if (!stats) return null;
@@ -207,17 +91,16 @@ const UserDashboard = () => {
     );
   };
 
-  
-    const variants = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-};
+  const variants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
 
   const renderMainContent = () => {
     switch (selectedSection) {
       case "view-books":
-        return <ViewBooks showPdfButton userId={user?._id} />;
+        return <ViewBooks filters={filters} mode="browse" />;
       case "search-books":
         return (
           <div className="bg-white shadow-md rounded-lg p-6">
@@ -242,11 +125,11 @@ const UserDashboard = () => {
                 className="p-3 border border-gray-300 rounded-lg focus:outline-none"
               />
             </div>
-            <ViewBooks filters={filters} showPdfButton userId={user?._id} />
+            <ViewBooks filters={filters} mode="browse" />
           </div>
         );
       case "my-library":
-        return <MyLibrary />;
+        return <ViewBooks mode="borrowed" />;
       case "home":
       default:
         return (

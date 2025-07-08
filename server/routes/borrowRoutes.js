@@ -8,6 +8,7 @@ import {
   payFine,
   getAllUsersFines,
   getBorrowReturnStats,
+  getAvailableBooks,
 } from "../controllers/borrowController.js";
 
 import { verifyToken } from "../middleware/authMiddleware.js";
@@ -28,5 +29,7 @@ router.get("/all-fines", verifyToken, getAllUsersFines);
 
 // admin stats for borrowed vs returned
 router.get("/admin/borrow-return-stats", verifyToken, getBorrowReturnStats);
+
+router.get("/available-books", verifyToken, getAvailableBooks); // new
 
 export default router;

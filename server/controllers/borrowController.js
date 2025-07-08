@@ -263,3 +263,29 @@ export const getBorrowReturnStats = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch stats" });
   }
 };
+
+
+// Get books not currently borrowed by the user
+export const getAvailableBooks = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Find all currently borrowed (and not returned) books by this user
+    const borrowedBooks = await BorrowedBook.find({
+      userId,
+      isReturned: false,
+    }).select("bookId");
+
+    const borrowedBookIds = borrowedBooks.map((b) => b.bookId);
+
+    // Fetch books not in that list
+    const availableBooks = await Book.find({
+      _id: { $nin: borrowedBookIds },
+    });
+
+    res.status(200).json(availableBooks);
+  } catch (err) {
+    console.error("Error fetching available books:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
