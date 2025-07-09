@@ -228,7 +228,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                   return (
                     <div
                       key={book._id}
-                      className="bg-white shadow-md rounded-xl p-4 pb-7 border border-gray-200 flex flex-col relative"
+                      className="bg-white shadow-md rounded-xl p-4 pb-10 border border-gray-200 flex flex-col relative"
                     >
                       
                       {userRole === "admin" && (
@@ -255,9 +255,8 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
                         alt={book.title}
                         crossOrigin="anonymous"
-                        className="w-full h-48 object-cover rounded mb-4"
+                        className="w-full h-48 md:h-64 lg:h-72 xl:h-85 object-cover rounded mb-4"
                       />
-
                       
                       <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
                       <p className="text-gray-600">Author: {book.author}</p>
