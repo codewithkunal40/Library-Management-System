@@ -219,7 +219,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
               <h2 className="text-2xl font-semibold mb-4 text-orange-600">
                 {genre}
               </h2>
-              
+
               <div className="flex overflow-x-auto gap-4 pb-4">
                 {groupedBooks[genre].map((book) => {
                   const borrowed = isBookBorrowed(book._id);
@@ -231,7 +231,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       key={book._id}
                       className="bg-white shadow-md rounded-xl p-4 pb-10 border border-gray-200 flex flex-col relative flex-shrink-0 w-72"
                     >
-                      
                       {userRole === "admin" && (
                         <div className="absolute bottom-3 right-3 flex gap-3">
                           <button
@@ -249,100 +248,106 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         </div>
                       )}
 
-                    <div className="flex flex-col h-full">
-                      
-                      <img
-                        src={`http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`}
-                        alt={book.title}
-                        crossOrigin="anonymous"
-                        className="w-full h-48 md:h-64 lg:h-72 xl:h-85 object-cover rounded mb-4"
-                      />
+                      <div className="flex flex-col h-full">
+                        <div className="w-full aspect-[3/4] relative mb-4 rounded overflow-hidden">
+                          <img
+                            src={`http://localhost:3000/${book.coverImage.replace(
+                              /\\/g,
+                              "/"
+                            )}`}
+                            alt={book.title}
+                            crossOrigin="anonymous"
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        </div>
 
-                      <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
-                      <p className="text-gray-600">Author: {book.author}</p>
-                      <p className="text-gray-600 flex items-center">
-                        Rating: {renderStars(book.rating)}
-                        <span className="ml-2 text-sm text-gray-500">
-                          ({book.rating?.toFixed(1) || 0}/5)
-                        </span>
-                      </p>
-
-                      {userRole === "user" && (
+                        <h2 className="text-lg font-bold text-gray-800">
+                          {book.title}
+                        </h2>
+                        <p className="text-gray-600">Author: {book.author}</p>
                         <p className="text-gray-600 flex items-center">
-                          User's Rating:{" "}
-                          {userRating ? (
-                            <>
-                              {renderStars(userRating)}
-                              <span className="ml-2 text-sm text-gray-500">
-                                ({userRating.toFixed(1)}/5)
+                          Rating: {renderStars(book.rating)}
+                          <span className="ml-2 text-sm text-gray-500">
+                            ({book.rating?.toFixed(1) || 0}/5)
+                          </span>
+                        </p>
+
+                        {userRole === "user" && (
+                          <p className="text-gray-600 flex items-center">
+                            User's Rating:{" "}
+                            {userRating ? (
+                              <>
+                                {renderStars(userRating)}
+                                <span className="ml-2 text-sm text-gray-500">
+                                  ({userRating.toFixed(1)}/5)
+                                </span>
+                              </>
+                            ) : (
+                              <span className="ml-2 text-sm italic font-bold text-gray-800">
+                                Unrated
                               </span>
-                            </>
-                          ) : (
-                            <span className="ml-2 text-sm italic font-bold text-gray-800">
-                              Unrated
+                            )}
+                          </p>
+                        )}
+
+                        <p className="text-gray-600">ISBN: {book.isbn}</p>
+                        <p className="text-gray-600">Genre: {book.genre}</p>
+                        <p className="text-gray-600">Price: ₹{book.price}</p>
+
+                        <p className="text-gray-600 mt-2 line-clamp-4 overflow-hidden">
+                          Description: {book.description}
+                        </p>
+
+                        <p className="text-xs text-gray-500 flex items-center gap-1 mt-2">
+                          Added on: {new Date(book.createdAt).toLocaleString()}
+                          {isRecentlyAdded(book.createdAt) && (
+                            <span className="bg-green-100 text-green-600 whitespace-nowrap px-2 py-0.5 rounded-full text-xs font-semibold">
+                              Recently Added
                             </span>
                           )}
                         </p>
-                      )}
 
-                      <p className="text-gray-600">ISBN: {book.isbn}</p>
-                      <p className="text-gray-600">Genre: {book.genre}</p>
-                      <p className="text-gray-600">Price: ₹{book.price}</p>
-                  
-                      <p className="text-gray-600 mt-2 line-clamp-4 overflow-hidden">
-                        Description: {book.description}
-                      </p>
-
-                      <p className="text-xs text-gray-500 flex items-center gap-1 mt-2">
-                        Added on: {new Date(book.createdAt).toLocaleString()}
-                        {isRecentlyAdded(book.createdAt) && (
-                          <span className="bg-green-100 text-green-600 whitespace-nowrap px-2 py-0.5 rounded-full text-xs font-semibold">
-                            Recently Added
-                          </span>
+                        {userRole === "user" && (
+                          <div className="mt-auto pt-3 space-y-2">
+                            {mode === "borrowed" ? (
+                              <>
+                                <button
+                                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full"
+                                  onClick={() => handleReturn(book._id)}
+                                >
+                                  Return
+                                </button>
+                                <button
+                                  className={`flex items-center justify-center gap-2 px-4 py-2 rounded w-full font-medium ${
+                                    canViewPDF
+                                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                                      : "bg-gray-300 text-gray-600 cursor-not-allowed"
+                                  }`}
+                                  disabled={!canViewPDF}
+                                  onClick={() => {
+                                    if (canViewPDF) {
+                                      setCurrentPDF(book.pdfPath);
+                                      setShowPDFModal(true);
+                                    }
+                                  }}
+                                >
+                                  <FaFilePdf />
+                                  View PDF
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
+                                onClick={() => handleBorrow(book._id)}
+                                disabled={borrowed}
+                              >
+                                {borrowed ? "Borrowed" : "Borrow"}
+                              </button>
+                            )}
+                          </div>
                         )}
-                      </p>
-                      
-                      {userRole === "user" && (
-                        <div className="mt-auto pt-3 space-y-2">
-                          {mode === "borrowed" ? (
-                            <>
-                              <button
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full"
-                                onClick={() => handleReturn(book._id)}
-                              >
-                                Return
-                              </button>
-                              <button
-                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded w-full font-medium ${
-                                  canViewPDF
-                                    ? "bg-blue-500 hover:bg-blue-600 text-white"
-                                    : "bg-gray-300 text-gray-600 cursor-not-allowed"
-                                }`}
-                                disabled={!canViewPDF}
-                                onClick={() => {
-                                  if (canViewPDF) {
-                                    setCurrentPDF(book.pdfPath);
-                                    setShowPDFModal(true);
-                                  }
-                                }}
-                              >
-                                <FaFilePdf />
-                                View PDF
-                              </button>
-                            </>
-                          ) : (
-                            <button
-                              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
-                              onClick={() => handleBorrow(book._id)}
-                              disabled={borrowed}
-                            >
-                              {borrowed ? "Borrowed" : "Borrow"}
-                            </button>
-                          )}
-                        </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
                   );
                 })}
               </div>
