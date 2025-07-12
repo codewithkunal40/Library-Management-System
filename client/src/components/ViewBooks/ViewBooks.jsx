@@ -248,7 +248,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         </div>
                       )}
 
-
                     <div className="flex flex-col h-full">
                       
                       <img
@@ -288,13 +287,11 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       <p className="text-gray-600">ISBN: {book.isbn}</p>
                       <p className="text-gray-600">Genre: {book.genre}</p>
                       <p className="text-gray-600">Price: ₹{book.price}</p>
-
-                      
+                  
                       <p className="text-gray-600 mt-2 line-clamp-4 overflow-hidden">
                         Description: {book.description}
                       </p>
 
-                      
                       <p className="text-xs text-gray-500 flex items-center gap-1 mt-2">
                         Added on: {new Date(book.createdAt).toLocaleString()}
                         {isRecentlyAdded(book.createdAt) && (
@@ -303,7 +300,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                           </span>
                         )}
                       </p>
-
                       
                       {userRole === "user" && (
                         <div className="mt-3 space-y-2">
