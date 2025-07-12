@@ -219,7 +219,8 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
               <h2 className="text-2xl font-semibold mb-4 text-orange-600">
                 {genre}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {/* --- MODIFICATION START --- */}
+              <div className="flex overflow-x-auto gap-4 pb-4">
                 {groupedBooks[genre].map((book) => {
                   const borrowed = isBookBorrowed(book._id);
                   const canViewPDF = hasAccessToPDF(book._id) && book.pdfPath;
@@ -228,8 +229,9 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                   return (
                     <div
                       key={book._id}
-                      className="bg-white shadow-md rounded-xl p-4 pb-10 border border-gray-200 flex flex-col relative"
+                      className="bg-white shadow-md rounded-xl p-4 pb-10 border border-gray-200 flex flex-col relative flex-shrink-0 w-72"
                     >
+                    {/* --- MODIFICATION END --- */}
                       
                       {userRole === "admin" && (
                         <div className="absolute bottom-3 right-3 flex gap-3">
@@ -302,7 +304,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       </p>
                       
                       {userRole === "user" && (
-                        <div className="mt-3 space-y-2">
+                        <div className="mt-auto pt-3 space-y-2">
                           {mode === "borrowed" ? (
                             <>
                               <button
@@ -342,7 +344,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       )}
                     </div>
                   </div>
-
                   );
                 })}
               </div>
