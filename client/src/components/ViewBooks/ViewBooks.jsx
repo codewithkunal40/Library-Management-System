@@ -219,7 +219,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
               <h2 className="text-2xl font-semibold mb-4 text-orange-600">
                 {genre}
               </h2>
-              {/* --- MODIFICATION START --- */}
+              
               <div className="flex overflow-x-auto gap-4 pb-4">
                 {groupedBooks[genre].map((book) => {
                   const borrowed = isBookBorrowed(book._id);
@@ -231,7 +231,6 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       key={book._id}
                       className="bg-white shadow-md rounded-xl p-4 pb-10 border border-gray-200 flex flex-col relative flex-shrink-0 w-72"
                     >
-                    {/* --- MODIFICATION END --- */}
                       
                       {userRole === "admin" && (
                         <div className="absolute bottom-3 right-3 flex gap-3">
@@ -258,7 +257,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         crossOrigin="anonymous"
                         className="w-full h-48 md:h-64 lg:h-72 xl:h-85 object-cover rounded mb-4"
                       />
-                      
+
                       <h2 className="text-lg font-bold text-gray-800">{book.title}</h2>
                       <p className="text-gray-600">Author: {book.author}</p>
                       <p className="text-gray-600 flex items-center">
