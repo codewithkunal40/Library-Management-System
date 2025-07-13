@@ -31,21 +31,35 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.warn("No token found. Cannot fetch stats.");
+        return;
+      }
+
       try {
         const res = await axios.get(
           "http://localhost:3000/api/books/dashboard-stats",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
         setStats(res.data);
       } catch (err) {
-        console.error("Error fetching stats:", err);
+        console.error(
+          "Error fetching stats:",
+          err.response?.data || err.message
+        );
       }
     };
-    if (user) fetchStats();
+
+    if (user && localStorage.getItem("token")) {
+      console.log("Fetching stats with token:", localStorage.getItem("token"));
+      fetchStats();
+    }
   }, [user]);
 
   const handleLogout = () => {

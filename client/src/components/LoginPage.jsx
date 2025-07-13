@@ -35,8 +35,14 @@ const LoginPage = () => {
           role: data.user.role || "user",
         };
 
-        localStorage.setItem("user", JSON.stringify(userWithRole));
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(userWithRole));
+
+        import("axios").then((axiosModule) => {
+          axiosModule.default.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${data.token}`;
+        });
 
         navigate("/user-dashboard");
       } else {
