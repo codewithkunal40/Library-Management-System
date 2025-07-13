@@ -17,24 +17,34 @@ import {
 
 const UserDashboard = () => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [selectedSection, setSelectedSection] = useState("home");
   const [filters, setFilters] = useState({ name: "", genre: "" });
   const [stats, setStats] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAuthLoaded, setIsAuthLoaded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser) navigate("/");
-    else setUser(storedUser);
+    const storedToken = localStorage.getItem("token");
+
+    if (!storedUser || !storedToken) {
+      console.warn(
+        "User or token not found in localStorage. Redirecting to login."
+      );
+      navigate("/login");
+    } else {
+      setUser(storedUser);
+      setToken(storedToken);
+      setIsAuthLoaded(true);
+    }
   }, [navigate]);
 
   useEffect(() => {
     const fetchStats = async () => {
-      const token = localStorage.getItem("token");
-
       if (!token) {
-        console.warn("No token found. Cannot fetch stats.");
+        console.warn("Token not available to fetch stats.");
         return;
       }
 
@@ -51,20 +61,31 @@ const UserDashboard = () => {
       } catch (err) {
         console.error(
           "Error fetching stats:",
-          err.response?.data || err.message
+          err.response?.data?.message || err.message
         );
+
+        if (
+          err.response &&
+          (err.response.status === 401 || err.response.status === 403)
+        ) {
+          console.error("Unauthorized access, please login again.");
+          handleLogout();
+        }
       }
     };
 
-    if (user && localStorage.getItem("token")) {
-      console.log("Fetching stats with token:", localStorage.getItem("token"));
+    if (user && token && isAuthLoaded) {
+      console.log("Fetching stats with token:", token);
       fetchStats();
     }
-  }, [user]);
+  }, [user, token, isAuthLoaded]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    setUser(null);
+    setToken(null);
+    setIsAuthLoaded(false);
     navigate("/login");
   };
 
@@ -112,6 +133,14 @@ const UserDashboard = () => {
   };
 
   const renderMainContent = () => {
+    if (!isAuthLoaded) {
+      return (
+        <div className="text-center p-6 text-gray-700">
+          Loading dashboard...
+        </div>
+      );
+    }
+
     switch (selectedSection) {
       case "view-books":
         return <ViewBooks filters={filters} mode="browse" />;
@@ -156,16 +185,15 @@ const UserDashboard = () => {
               searching books 👍
             </p>
             {renderStatsChart()}
-            <UserFines
-              userId={user?._id}
-              token={localStorage.getItem("token")}
-            />
+            {user?._id && token && (
+              <UserFines userId={user._id} token={token} />
+            )}
           </div>
         );
     }
   };
 
-  return user ? (
+  return isAuthLoaded ? (
     <div className="min-h-screen bg-gradient-to-br from-orange-100 to-orange-300 relative">
       <div className="md:hidden flex items-center justify-between bg-orange-200 p-4 shadow">
         <h1 className="text-xl font-bold text-orange-800">User Dashboard</h1>
@@ -270,7 +298,13 @@ const UserDashboard = () => {
         </main>
       </div>
     </div>
-  ) : null;
+  ) : (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-300">
+      <p className="text-lg text-orange-800 font-semibold">
+        Loading user data...
+      </p>
+    </div>
+  );
 };
 
 export default UserDashboard;

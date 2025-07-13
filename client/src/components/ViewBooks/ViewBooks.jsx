@@ -24,12 +24,16 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
   }, []);
 
   useEffect(() => {
-    fetchBorrowedBooks();
-    fetchBooks();
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchBorrowedBooks(token);
+      fetchBooks(token);
+    } else {
+      toast.error("Unauthorized. Please login.");
+    }
   }, []);
 
-  const fetchBorrowedBooks = async () => {
-    const token = localStorage.getItem("token");
+  const fetchBorrowedBooks = async (token) => {
     if (!token) return;
     try {
       const response = await fetch(
@@ -48,8 +52,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     }
   };
 
-  const fetchBooks = async () => {
-    const token = localStorage.getItem("token");
+  const fetchBooks = async (token) => {
     if (!token) {
       toast.error("Unauthorized. Please login.");
       return;
@@ -102,7 +105,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
       if (!response.ok)
         throw new Error(data.message || "Failed to borrow book");
       toast.success(data.message);
-      fetchBorrowedBooks();
+      fetchBorrowedBooks(token);
     } catch (err) {
       toast.error(err.message);
     }
@@ -131,8 +134,8 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
       if (!response.ok)
         throw new Error(data.message || "Failed to return book");
       toast.success(data.message);
-      fetchBorrowedBooks();
-      fetchBooks();
+      fetchBorrowedBooks(token);
+      fetchBooks(token);
       setShowRatingModal(false);
       setRatingBookId(null);
     } catch (err) {
@@ -337,7 +340,11 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                               </>
                             ) : (
                               <button
-                                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded w-full"
+                                className={`px-4 py-2 rounded w-full ${
+                                  borrowed
+                                    ? "bg-green-500 hover:bg-green-600 text-white"
+                                    : "bg-orange-500 hover:bg-orange-600 text-white"
+                                }`}
                                 onClick={() => handleBorrow(book._id)}
                                 disabled={borrowed}
                               >
