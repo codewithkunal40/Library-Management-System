@@ -78,16 +78,16 @@ const UserDashboard = () => {
       console.log("Fetching stats with token:", token);
       fetchStats();
     }
-  }, [user, token, isAuthLoaded]);
+  }, [user, token, isAuthLoaded, navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
     setToken(null);
     setIsAuthLoaded(false);
     navigate("/login");
-  };
+  }, [navigate]);
 
   const displayName =
     user?.displayName || user?.name || user?.username || "User";
