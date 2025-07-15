@@ -227,6 +227,8 @@ export const getAllUsersFines = async (req, res) => {
     const userFinesMap = new Map();
 
     for (const borrow of pendingBorrows) {
+      if (!borrow.userId) continue; 
+
       const fine = calculateFine(borrow.borrowDate);
       if (fine <= 0) continue;
 
@@ -247,6 +249,8 @@ export const getAllUsersFines = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
 
 // Admin Dashboard Stats (Borrowed vs Returned)
 export const getBorrowReturnStats = async (req, res) => {
