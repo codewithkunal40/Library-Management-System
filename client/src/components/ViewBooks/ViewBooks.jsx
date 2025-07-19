@@ -111,9 +111,37 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     }
   };
 
-  const handleReturn = (bookId) => {
-    setRatingBookId(bookId);
-    setShowRatingModal(true);
+  const handleReturn = async (bookId) => {
+    const userRating = getUserRating(bookId);
+    const token = localStorage.getItem("token");
+
+    if (userRating) {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/borrow/return/${bookId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ rating: null }),
+          }
+        );
+        const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.message || "Failed to return book");
+        toast.success("Book returned (you already rated it earlier).");
+        fetchBorrowedBooks(token);
+        fetchBooks(token);
+      } catch (err) {
+        toast.error(err.message);
+      }
+    } else {
+      // First time return – collect rating
+      setRatingBookId(bookId);
+      setShowRatingModal(true);
+    }
   };
 
   const confirmReturnWithRating = async (bookId, ratingValue) => {

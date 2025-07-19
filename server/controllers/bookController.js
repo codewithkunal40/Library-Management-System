@@ -190,13 +190,13 @@ export const rateBook = async (req, res) => {
       (r) => r.user.toString() === userId.toString()
     );
 
-    if (existingRatingIndex !== -1) {
-      // Update rating
-      book.ratings[existingRatingIndex].rating = rating;
-    } else {
-      // Add new rating
-      book.ratings.push({ user: userId, rating });
-    }
+   if (existingRatingIndex !== -1) {
+  return res.status(400).json({ message: "You have already rated this book." });
+}
+
+// Add new rating
+book.ratings.push({ user: userId, rating });
+
 
     // Recalculate average
     const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);

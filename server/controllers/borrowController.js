@@ -75,13 +75,14 @@ export const returnBook = async (req, res) => {
         (r) => r.user.toString() === userId.toString()
       );
 
-      if (existingRatingIndex !== -1) {
-        // Update rating
-        book.ratings[existingRatingIndex].rating = rating;
-      } else {
-        // Add new rating
-        book.ratings.push({ user: userId, rating });
-      }
+   if (existingRatingIndex !== -1) {
+  // Skip adding rating if user already rated before
+  console.log("User already rated. Skipping rating update.");
+} else {
+  // Add new rating
+  book.ratings.push({ user: userId, rating });
+}
+
 
       // Recalculate average rating
       const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);
