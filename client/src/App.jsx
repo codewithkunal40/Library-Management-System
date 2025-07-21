@@ -13,6 +13,7 @@ const ForgetPasswordPage = lazy(() => import("./components/ForgetPasswordPage"))
 const VerifyOtpPage = lazy(() => import("./components/VerifyOtpPage"));
 const AddBookForm = lazy(() => import("./components/AddBooks/AddBookForm"));
 const ViewBooks = lazy(() => import("./components/ViewBooks/ViewBooks"));
+const ArchivedBooks = lazy(() => import("./components/ArchivedBooks")); 
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOtpPage />} />
           <Route path="/add-books" element={<AddBookForm />} />
           <Route path="/view-books" element={<ViewBooks />} />
+          <Route path="/archived-books" element={<ArchivedBooks />} /> 
           <Route path="/user-dashboard" element={<UserDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Routes>

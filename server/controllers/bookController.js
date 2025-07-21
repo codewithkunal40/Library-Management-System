@@ -2,6 +2,7 @@ import Book from "../models/bookModel.js";
 import path from "path";
 import fs from "fs";
 import BorrowedBook from "../models/borrowedBookModel.js";
+import ArchivedBook from "../models/ArchivedBook.js";
 
 // Admin can add a book with cover image
 export const addBook = async (req, res) => {
@@ -101,43 +102,47 @@ export const updateBook = async (req, res) => {
 };
 
 // DELETE book
+
 export const deleteBook = async (req, res) => {
   try {
     const bookId = req.params.id;
 
-    // Find and delete the book
-    const book = await Book.findByIdAndDelete(bookId);
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
-    if (!book) {
-      return res.status(404).json({ message: "Book not found" });
-    }
+    // Archive book before deletion
+    const archivedBook = new ArchivedBook({
+      title: book.title,
+      author: book.author,
+      genre: book.genre,
+      isbn: book.isbn,
+      price: book.price,
+      description: book.description,
+      coverImage: book.coverImage,
+      pdfPath: book.pdfPath,
+      deletedBy: req.user._id,
+    });
 
-    if (book.coverImage) {
-      const imagePath = path.join(process.cwd(), book.coverImage);
-      if (fs.existsSync(imagePath)) {
-        fs.unlink(imagePath, (err) => {
-          if (err) console.error("Image delete error:", err);
-        });
-      } else {
-        console.warn(
-          "Cover image file not found, skipping deletion:",
-          imagePath
-        );
+    await archivedBook.save(); // Save to archive
+    await Book.findByIdAndDelete(bookId); // Remove original
+
+    // Delete files from filesystem
+    const deleteFileIfExists = async (relativePath) => {
+      if (!relativePath) return;
+      const fullPath = path.resolve(process.cwd(), relativePath);
+      if (fs.existsSync(fullPath)) {
+        try {
+          await fs.promises.unlink(fullPath);
+        } catch (error) {
+          console.error(`Failed to delete file ${relativePath}:`, error);
+        }
       }
-    }
+    };
 
-    if (book.pdf) {
-      const pdfPath = path.join(process.cwd(), book.pdf);
-      if (fs.existsSync(pdfPath)) {
-        fs.unlink(pdfPath, (err) => {
-          if (err) console.error("PDF delete error:", err);
-        });
-      } else {
-        console.warn("PDF file not found, skipping deletion:", pdfPath);
-      }
-    }
+    await deleteFileIfExists(book.coverImage);
+    await deleteFileIfExists(book.pdfPath);
 
-    res.status(200).json({ message: "Book deleted successfully" });
+    res.status(200).json({ message: "Book deleted and archived successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Failed to delete book" });

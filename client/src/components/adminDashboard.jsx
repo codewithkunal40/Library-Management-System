@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddBooks from "./AddBooks/AddBookForm";
 import ViewBooks from "./ViewBooks/ViewBooks";
+import ArchivedBooks from "./ArchivedBooks";
 import { AnimatePresence, motion } from "framer-motion";
-
 import AdminFines from "./AdminFines";
 import {
   BarChart,
@@ -171,6 +171,8 @@ const AdminDashboard = () => {
         return <ViewBooks />;
       case "add-books":
         return <AddBooks />;
+      case "archived-books":
+        return <ArchivedBooks />;
       case "manage-users":
         return (
           <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-6xl mx-auto">
@@ -375,6 +377,7 @@ const AdminDashboard = () => {
                   { id: "dashboard", label: "Home" },
                   { id: "add-books", label: "Add Books" },
                   { id: "view-books", label: "View Books" },
+                  { id: "archived-books", label: "Archived Books" },
                   { id: "manage-users", label: "Manage Users" },
                   { id: "member-history", label: "Member's History" },
                 ].map(({ id, label }) => (
