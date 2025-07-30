@@ -30,9 +30,6 @@ const UserDashboard = () => {
     const storedToken = localStorage.getItem("token");
 
     if (!storedUser || !storedToken) {
-      console.warn(
-        "User or token not found in localStorage. Redirecting to login."
-      );
       navigate("/login");
     } else {
       setUser(storedUser);
@@ -43,11 +40,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (!token) {
-        console.warn("Token not available to fetch stats.");
-        return;
-      }
-
+      if (!token) return;
       try {
         const res = await axios.get(
           "http://localhost:3000/api/books/dashboard-stats",
@@ -59,26 +52,19 @@ const UserDashboard = () => {
         );
         setStats(res.data);
       } catch (err) {
-        console.error(
-          "Error fetching stats:",
-          err.response?.data?.message || err.message
-        );
-
         if (
           err.response &&
           (err.response.status === 401 || err.response.status === 403)
         ) {
-          console.error("Unauthorized access, please login again.");
           handleLogout();
         }
       }
     };
 
     if (user && token && isAuthLoaded) {
-      console.log("Fetching stats with token:", token);
       fetchStats();
     }
-  }, [user, token, isAuthLoaded, navigate]);
+  }, [user, token, isAuthLoaded]);
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("user");
@@ -134,11 +120,7 @@ const UserDashboard = () => {
 
   const renderMainContent = () => {
     if (!isAuthLoaded) {
-      return (
-        <div className="text-center p-6 text-gray-700">
-          Loading dashboard...
-        </div>
-      );
+      return <div className="text-center p-6 text-gray-700">Loading dashboard...</div>;
     }
 
     switch (selectedSection) {
@@ -185,8 +167,10 @@ const UserDashboard = () => {
               searching books 👍
             </p>
             {renderStatsChart()}
-            {user?._id && token && (
-              <UserFines userId={user._id} token={token} />
+            {user && token && (
+              <div className="mt-8">
+                <UserFines userId={user._id} token={token} />
+              </div>
             )}
           </div>
         );
@@ -201,18 +185,8 @@ const UserDashboard = () => {
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="text-orange-700 focus:outline-none"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
@@ -240,9 +214,7 @@ const UserDashboard = () => {
                   crossOrigin="anonymous"
                 />
                 <h2 className="text-xl font-bold text-center">{displayName}</h2>
-                <p className="text-sm text-gray-500 text-center">
-                  {user?.email}
-                </p>
+                <p className="text-sm text-gray-500 text-center">{user?.email}</p>
               </div>
 
               <nav className="mt-8">
@@ -300,9 +272,7 @@ const UserDashboard = () => {
     </div>
   ) : (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-100 to-orange-300">
-      <p className="text-lg text-orange-800 font-semibold">
-        Loading user data...
-      </p>
+      <p className="text-lg text-orange-800 font-semibold">Loading user data...</p>
     </div>
   );
 };
