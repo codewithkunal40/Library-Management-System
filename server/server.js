@@ -6,7 +6,6 @@ import authRoutes from "./routes/authRoutes.js";
 import bookRoutes from "./routes/bookRoutes.js";
 import borrowRoutes from "./routes/borrowRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import fineRoutes from "./routes/borrowRoutes.js";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -22,12 +21,24 @@ const __dirname = dirname(__filename);
 // Connect to MongoDB
 connectDB();
 
-// CORS
+// Allowed origins
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  process.env.FRONTEND_URL // your Netlify site
+];
+
+// CORS setup
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    credentials: true
   })
 );
 
@@ -43,8 +54,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/borrow", borrowRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api", borrowRoutes);
 
+// Server listen
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
