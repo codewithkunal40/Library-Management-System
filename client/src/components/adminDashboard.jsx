@@ -176,7 +176,7 @@ const AdminDashboard = () => {
       case "manage-users":
         return (
           <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4 text-orange-800 text-center">
+            <h2 className="text-2xl font-bold mb-4 animate-pulse text-orange-800 text-center">
               Manage Users
             </h2>
             {users.map((user) => (
@@ -194,14 +194,14 @@ const AdminDashboard = () => {
                     {user.role === "admin" ? (
                       <button
                         onClick={() => handleDemote(user._id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                        className="bg-red-500 text-white px-2 py-2 rounded-lg hover:bg-red-600"
                       >
                         Remove Admin
                       </button>
                     ) : (
                       <button
                         onClick={() => handlePromote(user._id)}
-                        className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+                        className="bg-orange-500 text-white px-2 py-2 rounded-lg hover:bg-orange-600"
                       >
                         Promote to Admin
                       </button>
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
       case "member-history":
         return (
           <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-7xl mx-auto overflow-x-auto">
-            <h2 className="text-2xl font-bold mb-6 text-orange-800 text-center">
+            <h2 className="text-2xl font-bold mb-6 animate-pulse text-orange-800 text-center">
               Member's Library History
             </h2>
             <div className="min-w-[900px]">
@@ -274,7 +274,7 @@ const AdminDashboard = () => {
       default:
         return (
           <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-6xl mx-auto">
-            <h1 className="text-3xl font-bold text-center text-orange-800 mb-2">
+            <h1 className="text-3xl font-bold text-center animate-pulse text-orange-800 mb-2">
               Admin Dashboard
             </h1>
             <p className="text-lg font-medium text-gray-600 text-center mb-6">
