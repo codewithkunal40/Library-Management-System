@@ -8,6 +8,7 @@ const ArchivedBooks = () => {
   useEffect(() => {
     const fetchArchivedBooks = async () => {
       const token = localStorage.getItem("token");
+
       try {
         const response = await fetch(
           "http://localhost:3000/api/books/archived-books",
@@ -15,7 +16,7 @@ const ArchivedBooks = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         const data = await response.json();
@@ -24,7 +25,7 @@ const ArchivedBooks = () => {
           throw new Error(data.message || "Failed to fetch archived books.");
         }
 
-        setArchivedBooks(data);
+        setArchivedBooks(Array.isArray(data) ? data : []);
       } catch (err) {
         toast.error(err.message || "Something went wrong.");
       } finally {
@@ -34,6 +35,18 @@ const ArchivedBooks = () => {
 
     fetchArchivedBooks();
   }, []);
+
+  const getDeletedBy = (deletedBy) => {
+    if (!deletedBy) return "Unknown";
+
+    if (typeof deletedBy === "string") return deletedBy;
+
+    if (typeof deletedBy === "object") {
+      return deletedBy.fullName || deletedBy.email || "Unknown";
+    }
+
+    return "Unknown";
+  };
 
   return (
     <div className="p-6">
@@ -53,24 +66,25 @@ const ArchivedBooks = () => {
               className="bg-white shadow-md border border-gray-200 rounded-xl p-4"
             >
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {book.title || "Untitled"}
+                {book?.title || "Untitled"}
               </h3>
-              <p className="text-gray-600">Author: {book.author || "N/A"}</p>
-              <p className="text-gray-600">Genre: {book.genre || "N/A"}</p>
-              <p className="text-gray-600">ISBN: {book.isbn || "N/A"}</p>
-              <p className="text-gray-600">Price: ₹{book.price || "N/A"}</p>
+
+              <p className="text-gray-600">Author: {book?.author || "N/A"}</p>
+              <p className="text-gray-600">Genre: {book?.genre || "N/A"}</p>
+              <p className="text-gray-600">ISBN: {book?.isbn || "N/A"}</p>
+              <p className="text-gray-600">Price: ₹{book?.price ?? "N/A"}</p>
+
               <p className="text-gray-600 mt-2 line-clamp-4">
-                Description: {book.description || "No description available."}
+                Description: {book?.description || "No description available."}
               </p>
 
               <p className="text-sm text-gray-500 mt-3">
                 Deleted By:{" "}
                 <span className="font-medium">
-                  {typeof book.deletedBy === "object"
-                    ? book.deletedBy.fullName || book.deletedBy.email || "Unknown"
-                    : book.deletedBy || "Unknown"}
+                  {getDeletedBy(book?.deletedBy)}
                 </span>
               </p>
+
               <p className="text-sm text-gray-500">
                 Deleted On:{" "}
                 {book?.createdAt

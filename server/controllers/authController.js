@@ -134,12 +134,12 @@ export const googleLogin = async (req, res) => {
 
     if (!user) {
       user = await User.create({
+        authProvider: "google",
         email,
         username: email.split("@")[0],
-        fullName: displayName,
-        password: "",
-        role: "user",
+        fullName: displayName || "Google User",
         profilePic,
+        role: "user",
       });
     }
 
@@ -159,6 +159,7 @@ export const googleLogin = async (req, res) => {
     res.status(500).json({ msg: error.message });
   }
 };
+
 
 // Send OTP
 export const sendOtp = async (req, res) => {
