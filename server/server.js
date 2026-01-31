@@ -24,6 +24,7 @@ connectDB();
 // Allowed origins
 const allowedOrigins = [
   "http://localhost:5173", // local dev
+  "http://localhost:3000", // local dev
   process.env.FRONTEND_URL // your Netlify site
 ];
 
@@ -37,10 +38,12 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
   })
 );
+
 
 // Middleware
 app.use(cookieParser());
