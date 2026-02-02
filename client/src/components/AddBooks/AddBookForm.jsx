@@ -81,7 +81,7 @@ const AddBookForm = () => {
     "Fiction", "Non-Fiction", "Productivity / Self-Help", "Science Fiction",
     "Self-Help / Psychology", "Fantasy", "Romance / Young Adult", "Mystery",
     "Thriller", "Romance", "Biography", "History", "Children", "Young Adult",
-    "Self-Help", "Other"
+    "Self-Help", "Other" , "Mythology"
   ];
 
   return (
