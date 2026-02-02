@@ -40,7 +40,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
         "http://localhost:3000/api/borrow/borrowed",
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok)
@@ -76,12 +76,12 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
 
   const isBookBorrowed = (bookId) =>
     borrowedBooks.some(
-      (b) => (b.bookId?._id || b.bookId) === bookId && !b.isReturned
+      (b) => (b.bookId?._id || b.bookId) === bookId && !b.isReturned,
     );
 
   const getUserRating = (bookId) => {
     const match = borrowedBooks.find(
-      (b) => (b.bookId?._id || b.bookId) === bookId
+      (b) => (b.bookId?._id || b.bookId) === bookId,
     );
     return match?.userRating || null;
   };
@@ -99,7 +99,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok)
@@ -126,7 +126,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ rating: null }),
-          }
+          },
         );
         const data = await response.json();
         if (!response.ok)
@@ -156,7 +156,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ rating: ratingValue }),
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok)
@@ -181,7 +181,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const data = await response.json();
       if (!response.ok) {
@@ -284,7 +284,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                           <img
                             src={`http://localhost:3000/${book.coverImage.replace(
                               /\\/g,
-                              "/"
+                              "/",
                             )}`}
                             alt={book.title}
                             crossOrigin="anonymous"
@@ -297,10 +297,14 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                         </h2>
                         <p className="text-gray-600">Author: {book.author}</p>
                         <p className="text-gray-600 flex items-center">
-                          Rating: {renderStars(book.rating)}
+                          Rating: {renderStars(book.averageRating || 0)}
                           <span className="ml-2 text-sm text-gray-500">
-                            ({book.rating?.toFixed(1) || 0}/5)
+                            ({book.averageRating?.toFixed(1) || 0}/5)
                           </span>
+                        </p>
+
+                        <p className="text-xs text-gray-500">
+                          ({book.ratings?.length || 0} ratings)
                         </p>
 
                         {userRole === "user" && (
@@ -426,7 +430,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
           onClose={() => setEditBook(null)}
           onSave={(updated) =>
             setBooks((prev) =>
-              prev.map((b) => (b._id === updated._id ? updated : b))
+              prev.map((b) => (b._id === updated._id ? updated : b)),
             )
           }
         />
@@ -443,7 +447,7 @@ const isRecentlyAdded = (createdAt) => {
   return now - createdDate <= 30 * 24 * 60 * 60 * 1000;
 };
 
-const renderStars = (rating) =>
+const renderStars = (rating = 0) =>
   [...Array(5)].map((_, i) => (
     <span
       key={i}
@@ -452,3 +456,4 @@ const renderStars = (rating) =>
       ★
     </span>
   ));
+

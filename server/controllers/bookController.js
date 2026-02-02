@@ -10,13 +10,15 @@ export const addBook = async (req, res) => {
     const { title, author, isbn, genre, rating, description, price } = req.body;
 
     if (!isbn) return res.status(400).json({ message: "ISBN is required" });
+
     const isbnRegex = /^(97(8|9))?\d{9}(\d|X)$/;
     if (!isbnRegex.test(isbn))
       return res.status(400).json({ message: "Invalid ISBN format" });
+
     if (!title || !author || price === undefined) {
-      return res
-        .status(400)
-        .json({ message: "Title, author, ISBN, and price are required" });
+      return res.status(400).json({
+        message: "Title, author, ISBN, and price are required",
+      });
     }
 
     const existingBook = await Book.findOne({ isbn });
@@ -27,6 +29,7 @@ export const addBook = async (req, res) => {
 
     let coverImagePath = "";
     let pdfPath = "";
+
     if (req.files?.coverImage) {
       coverImagePath = path.join(
         "uploads",
@@ -34,8 +37,21 @@ export const addBook = async (req, res) => {
         req.files.coverImage[0].filename
       );
     }
+
     if (req.files?.pdf) {
       pdfPath = path.join("uploads", "pdfs", req.files.pdf[0].filename);
+    }
+
+    //  store admin rating correctly
+    let ratings = [];
+    let averageRating = 0;
+
+    if (rating && rating >= 1 && rating <= 5) {
+      ratings.push({
+        user: req.user._id,
+        rating: Number(rating),
+      });
+      averageRating = Number(rating);
     }
 
     const book = await Book.create({
@@ -43,12 +59,13 @@ export const addBook = async (req, res) => {
       author,
       isbn,
       genre,
-      rating,
       description,
       price,
       coverImage: coverImagePath,
       pdfPath,
       addedBy: req.user._id,
+      ratings,
+      averageRating,
     });
 
     res.status(201).json(book);
@@ -57,6 +74,7 @@ export const addBook = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Get all books
 export const getAllBooks = async (req, res) => {
@@ -74,25 +92,49 @@ export const updateBook = async (req, res) => {
     const bookId = req.params.id;
     const updatedData = req.body;
 
-    const oldBook = await Book.findById(bookId);
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
-    if (req.file) {
-      if (oldBook && oldBook.coverImage) {
-        const imagePath = path.join(process.cwd(), oldBook.coverImage);
-        fs.unlink(imagePath, (err) => {
-          if (err) console.log("Old image delete error:", err);
+    // update admin rating properly
+    if (updatedData.rating) {
+      const adminRating = book.ratings.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+
+      if (adminRating) {
+        adminRating.rating = Number(updatedData.rating);
+      } else {
+        book.ratings.push({
+          user: req.user._id,
+          rating: Number(updatedData.rating),
         });
       }
-      updatedData.coverImage = path.join("uploads", "books", req.file.filename);
+
+      const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);
+      book.averageRating = Number(
+        (total / book.ratings.length).toFixed(1)
+      );
+
+      await book.save();
+      delete updatedData.rating; // ❗ important
+    }
+
+    // handle cover image update
+    if (req.file) {
+      if (book.coverImage) {
+        const imagePath = path.join(process.cwd(), book.coverImage);
+        fs.unlink(imagePath, () => {});
+      }
+      updatedData.coverImage = path.join(
+        "uploads",
+        "books",
+        req.file.filename
+      );
     }
 
     const updatedBook = await Book.findByIdAndUpdate(bookId, updatedData, {
       new: true,
     });
-
-    if (!updatedBook) {
-      return res.status(404).json({ message: "Book not found" });
-    }
 
     res.status(200).json(updatedBook);
   } catch (err) {
@@ -177,44 +219,42 @@ export const getLibraryStats = async (req, res) => {
 // Rate a Book
 export const rateBook = async (req, res) => {
   try {
-    const bookId = req.params.id;
     const { rating } = req.body;
     const userId = req.user._id;
+    const book = await Book.findById(req.params.id);
+
+    if (!book) return res.status(404).json({ message: "Book not found" });
 
     if (!rating || rating < 1 || rating > 5) {
       return res
         .status(400)
-        .json({ message: "Invalid rating. Must be between 1 and 5." });
+        .json({ message: "Rating must be between 1 and 5" });
     }
 
-    const book = await Book.findById(bookId);
-    if (!book) return res.status(404).json({ message: "Book not found" });
-
-    // Check if user has already rated
-    const existingRatingIndex = book.ratings.findIndex(
+    const existing = book.ratings.find(
       (r) => r.user.toString() === userId.toString()
     );
 
-   if (existingRatingIndex !== -1) {
-  return res.status(400).json({ message: "You have already rated this book." });
-}
+    if (existing) {
+      existing.rating = Number(rating);
+    } else {
+      book.ratings.push({ user: userId, rating: Number(rating) });
+    }
 
-// Add new rating
-book.ratings.push({ user: userId, rating });
-
-
-    // Recalculate average
     const total = book.ratings.reduce((sum, r) => sum + r.rating, 0);
-    book.averageRating = total / book.ratings.length;
+    book.averageRating = Number(
+      (total / book.ratings.length).toFixed(1)
+    );
 
     await book.save();
 
     res.status(200).json({
-      message: "Rating submitted successfully",
-      updatedBook: book,
+      message: "Rating updated successfully",
+      averageRating: book.averageRating,
     });
   } catch (error) {
     console.error("Rate Book Error:", error);
     res.status(500).json({ message: "Failed to rate book" });
   }
 };
+
