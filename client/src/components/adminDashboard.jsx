@@ -148,14 +148,14 @@ const AdminDashboard = () => {
           { name: "Users", value: stats.totalUsers },
           { name: "Books", value: stats.totalBooks },
           { name: "Borrowed", value: borrowStats.totalBorrowed },
-          { name: "Returned", value: borrowStats.totalReturned },
+          { name: "Read", value: borrowStats.totalReturned },
         ]
       : [];
 
   const borrowReturnData = borrowStats
     ? [
         { name: "Borrowed", value: borrowStats.totalBorrowed },
-        { name: "Returned", value: borrowStats.totalReturned },
+        { name: "Read", value: borrowStats.totalReturned },
       ]
     : [];
 

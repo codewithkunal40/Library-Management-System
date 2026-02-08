@@ -90,8 +90,8 @@ const UserDashboard = () => {
     if (!stats) return null;
     const chartData = [
       { name: "Total Books", value: stats.totalBooks },
-      { name: "Borrowed", value: stats.borrowedCount },
-      { name: "Not Returned", value: stats.notReturnedCount },
+      { name: "Read", value: stats.borrowedCount },
+      { name: "Not Read", value: stats.notReturnedCount },
     ];
 
     return (

@@ -87,3 +87,4 @@ const UserFines = () => {
 };
 
 export default UserFines;
+
