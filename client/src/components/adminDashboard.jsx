@@ -320,7 +320,10 @@ const AdminDashboard = () => {
             ) : (
               <p className="text-center text-gray-500">Loading stats...</p>
             )}
-            <AdminFines />
+            {/*
+<AdminFines />
+*/}
+
           </div>
         );
     }
