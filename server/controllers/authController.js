@@ -138,17 +138,26 @@ export const googleLogin = async (req, res) => {
         email,
         username: email.split("@")[0],
         fullName: displayName || "Google User",
-        profilePic,
+        profilePic: profilePic || "",
         role: "user",
       });
+    } else {
+      // Update profile picture if coming from Google
+      if (profilePic && profilePic !== user.profilePic) {
+        user.profilePic = profilePic;
+        await user.save();
+      }
     }
+
+    console.log("Incoming Google Data:", req.body);
+
 
     const token = generateToken(user._id, user.role);
 
     res.json({
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
