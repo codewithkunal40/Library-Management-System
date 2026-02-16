@@ -77,14 +77,12 @@ const UserDashboard = () => {
 
 const displayName =
     user?.displayName || user?.name || user?.username || "User";
-
   // FIX: Check if the image is a link (Google) or a file (Local)
   const profileImage = user?.profilePic
-    ? (user.profilePic.startsWith("http")
-        ? user.profilePic
+    ? (user.profilePic.startsWith("http") 
+        ? user.profilePic 
         : `http://localhost:3000/uploads/profiles/${user.profilePic}`)
     : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
 
   const handleSearchInputChange = useCallback((e) => {
     const { name, value } = e.target;

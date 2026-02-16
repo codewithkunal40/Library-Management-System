@@ -126,6 +126,7 @@ export const login = async (req, res) => {
 };
 
 // Google Login
+// Google Login
 export const googleLogin = async (req, res) => {
   try {
     const { email, displayName, profilePic } = req.body;
@@ -133,35 +134,32 @@ export const googleLogin = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      // Create new user
       user = await User.create({
         authProvider: "google",
         email,
         username: email.split("@")[0],
         fullName: displayName || "Google User",
-        profilePic: profilePic || "",
+        profilePic,
         role: "user",
       });
     } else {
-      // Update profile picture if coming from Google
-      if (profilePic && profilePic !== user.profilePic) {
-        user.profilePic = profilePic;
-        await user.save();
-      }
+      // *** FIX: Update existing user's profile picture ***
+      // This ensures that if the user already exists, we sync their pic with Google
+      user.profilePic = profilePic;
+      await user.save();
     }
-
-    console.log("Incoming Google Data:", req.body);
-
 
     const token = generateToken(user._id, user.role);
 
     res.json({
       token,
       user: {
-        _id: user._id,
+        id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
-        profilePic: user.profilePic,
+        profilePic: user.profilePic, // Now this will return the updated pic
       },
     });
   } catch (error) {
