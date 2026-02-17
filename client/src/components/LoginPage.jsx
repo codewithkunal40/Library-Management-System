@@ -33,15 +33,15 @@ const LoginPage = () => {
         const userWithRole = {
           ...data.user,
           role: data.user.role || "user",
+          authProvider: data.user.authProvider, 
         };
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(userWithRole));
 
         import("axios").then((axiosModule) => {
-          axiosModule.default.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${data.token}`;
+          axiosModule.default.defaults.headers.common["Authorization"] =
+            `Bearer ${data.token}`;
         });
 
         navigate("/user-dashboard");
@@ -90,7 +90,7 @@ const LoginPage = () => {
 
   return (
     <div className="h-[100vh] min-h-screen flex flex-col items-center justify-between bg-white pb-40 animate-fadeIn">
-            <div className="relative w-full h-[45vh]">
+      <div className="relative w-full h-[45vh]">
         <img
           src="https://res.cloudinary.com/dhtl10m17/image/upload/v1748065677/Libarary_image_ksw2a6.jpg"
           crossOrigin="anonymous"

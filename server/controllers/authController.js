@@ -126,7 +126,6 @@ export const login = async (req, res) => {
 };
 
 // Google Login
-// Google Login
 export const googleLogin = async (req, res) => {
   try {
     const { email, displayName, profilePic } = req.body;
@@ -134,7 +133,7 @@ export const googleLogin = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      // Create new user
+      // Create new Google user
       user = await User.create({
         authProvider: "google",
         email,
@@ -144,8 +143,8 @@ export const googleLogin = async (req, res) => {
         role: "user",
       });
     } else {
-      // *** FIX: Update existing user's profile picture ***
-      // This ensures that if the user already exists, we sync their pic with Google
+      // Ensure provider is always google if logged via google
+      user.authProvider = "google";
       user.profilePic = profilePic;
       await user.save();
     }
@@ -159,14 +158,15 @@ export const googleLogin = async (req, res) => {
         username: user.username,
         email: user.email,
         role: user.role,
-        profilePic: user.profilePic, // Now this will return the updated pic
+        fullName: user.fullName,
+        profilePic: user.profilePic,
+        authProvider: user.authProvider,
       },
     });
   } catch (error) {
     res.status(500).json({ msg: error.message });
   }
 };
-
 
 // Send OTP
 export const sendOtp = async (req, res) => {
@@ -279,11 +279,10 @@ export const demoteAdminToUser = async (req, res) => {
   }
 };
 
-
 // Get Member History
 export const getMemberHistory = async (req, res) => {
   try {
-    const users = await User.find(); 
+    const users = await User.find();
 
     const memberHistory = await Promise.all(
       users.map(async (user) => {
@@ -298,12 +297,13 @@ export const getMemberHistory = async (req, res) => {
           returned,
           notReturned,
         };
-      })
+      }),
     );
 
     res.status(200).json(memberHistory);
   } catch (error) {
-    res.status(500).json({ msg: "Failed to fetch member history", error: error.message });
+    res
+      .status(500)
+      .json({ msg: "Failed to fetch member history", error: error.message });
   }
 };
-

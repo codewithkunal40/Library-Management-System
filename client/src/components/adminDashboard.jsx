@@ -185,7 +185,22 @@ const AdminDashboard = () => {
                 className="flex justify-between items-center bg-orange-50 border p-4 rounded-lg mb-2"
               >
                 <div>
-                  <p className="font-semibold">{user.fullName}</p>
+                  <p className="font-semibold flex items-center gap-2">
+                    {user.fullName}
+
+                    {user.authProvider === "google" && (
+                      <span className="bg-blue-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">
+                        Google Authenticated
+                      </span>
+                    )}
+
+                    {user.authProvider === "local" && (
+                      <span className="bg-blue-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                        Local Account
+                      </span>
+                    )}
+                  </p>
+
                   <p className="text-sm text-gray-600">Email: {user.email}</p>
                   <p className="text-sm text-gray-600">Role: {user.role}</p>
                 </div>
@@ -323,7 +338,6 @@ const AdminDashboard = () => {
             {/*
 <AdminFines />
 */}
-
           </div>
         );
     }
