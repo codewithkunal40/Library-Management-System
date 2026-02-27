@@ -12,7 +12,7 @@ const UserFines = () => {
     const fetchFines = async () => {
         const token = localStorage.getItem("token");
         try {
-        const response = await fetch("https://library-management-system-27wb.onrender.com/api/borrow/fines", {
+        const response = await fetch("http://localhost:3000/api/borrow/fines", {
             headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error("Failed to fetch fines");
@@ -28,7 +28,7 @@ const UserFines = () => {
         const token = localStorage.getItem("token");
         try {
         const response = await fetch(
-            `https://library-management-system-27wb.onrender.com/api/borrow/pay-fine/${borrowId}`,
+            `http://localhost:3000/api/borrow/pay-fine/${borrowId}`,
             {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },

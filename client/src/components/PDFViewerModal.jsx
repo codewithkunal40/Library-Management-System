@@ -55,7 +55,7 @@ const PDFViewerModal = ({ isOpen, onClose, pdfPath }) => {
 
         <div className="overflow-auto flex-1 flex justify-center items-start">
           <Document
-            file={`https://library-management-system-27wb.onrender.com/${pdfPath.replace(/\\/g, "/")}`}
+            file={`http://localhost:3000/${pdfPath.replace(/\\/g, "/")}`}
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
             onLoadError={(error) => console.error("PDF load error:", error)}
             loading="Loading PDF..."

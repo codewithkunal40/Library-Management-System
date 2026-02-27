@@ -43,7 +43,7 @@ const UserDashboard = () => {
       if (!token) return;
       try {
         const res = await axios.get(
-          "https://library-management-system-27wb.onrender.com/api/books/dashboard-stats",
+          "http://localhost:3000/api/books/dashboard-stats",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ const displayName =
   const profileImage = user?.profilePic
     ? (user.profilePic.startsWith("http") 
         ? user.profilePic 
-        : `https://library-management-system-27wb.onrender.com/uploads/profiles/${user.profilePic}`)
+        : `http://localhost:3000/uploads/profiles/${user.profilePic}`)
     : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
   const handleSearchInputChange = useCallback((e) => {

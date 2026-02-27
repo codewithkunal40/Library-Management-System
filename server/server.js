@@ -24,7 +24,7 @@ connectDB();
 // Allowed origins
 const allowedOrigins = [
   "http://localhost:5173", // local dev
-  "https://library-management-system-27wb.onrender.com", // local dev
+  "http://localhost:3000", // local dev
   process.env.FRONTEND_URL // your Netlify site
 ];
 

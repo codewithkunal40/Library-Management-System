@@ -14,7 +14,7 @@ function ForgetPasswordPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("https://library-management-system-27wb.onrender.com/api/auth/forgot-password", { email });
+      const res = await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
       toast.success(res.data.msg);
       navigate("/verify-otp", { state: { email } });
     } catch (err) {

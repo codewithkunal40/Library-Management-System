@@ -17,7 +17,7 @@ const LoginPage = () => {
       const result = await signInWithPopup(auth, provider);
       const firebaseUser = result.user;
 
-      const res = await fetch("https://library-management-system-27wb.onrender.com/api/auth/google-login", {
+      const res = await fetch("http://localhost:3000/api/auth/google-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -62,7 +62,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("https://library-management-system-27wb.onrender.com/api/auth/login", {
+      const res = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

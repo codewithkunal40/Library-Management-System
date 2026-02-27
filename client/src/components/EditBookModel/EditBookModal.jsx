@@ -14,7 +14,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
     });
     const [preview, setPreview] = useState(
         book.coverImage
-        ? `https://library-management-system-27wb.onrender.com/${book.coverImage.replace(/\\/g, "/")}`
+        ? `http://localhost:3000/${book.coverImage.replace(/\\/g, "/")}`
         : ""
     );
     const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const EditBookModal = ({ book, isOpen, onClose, onSave }) => {
             });
 
             const response = await fetch(
-                `https://library-management-system-27wb.onrender.com/api/books/update-book/${book._id}`,
+                `http://localhost:3000/api/books/update-book/${book._id}`,
                 {
                     method: "PUT",
                     headers: {

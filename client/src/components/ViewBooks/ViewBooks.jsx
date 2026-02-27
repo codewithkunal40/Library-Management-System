@@ -37,7 +37,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     if (!token) return;
     try {
       const response = await fetch(
-        "https://library-management-system-27wb.onrender.com/api/borrow/borrowed",
+        "http://localhost:3000/api/borrow/borrowed",
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -58,7 +58,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
       return;
     }
     try {
-      const response = await fetch("https://library-management-system-27wb.onrender.com/api/books/get-book", {
+      const response = await fetch("http://localhost:3000/api/books/get-book", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `https://library-management-system-27wb.onrender.com/api/borrow/borrow/${bookId}`,
+        `http://localhost:3000/api/borrow/borrow/${bookId}`,
         {
           method: "POST",
           headers: {
@@ -118,7 +118,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     if (userRating) {
       try {
         const response = await fetch(
-          `https://library-management-system-27wb.onrender.com/api/borrow/return/${bookId}`,
+          `http://localhost:3000/api/borrow/return/${bookId}`,
           {
             method: "POST",
             headers: {
@@ -148,7 +148,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `https://library-management-system-27wb.onrender.com/api/borrow/return/${bookId}`,
+        `http://localhost:3000/api/borrow/return/${bookId}`,
         {
           method: "POST",
           headers: {
@@ -175,7 +175,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(
-        `https://library-management-system-27wb.onrender.com/api/books/delete-book/${book._id}`,
+        `http://localhost:3000/api/books/delete-book/${book._id}`,
         {
           method: "DELETE",
           headers: {
@@ -282,7 +282,7 @@ const ViewBooks = ({ filters = {}, mode = "browse" }) => {
                       <div className="flex flex-col h-full">
                         <div className="w-full aspect-[3/4] relative mb-4 rounded overflow-hidden">
                           <img
-                            src={`https://library-management-system-27wb.onrender.com/${book.coverImage.replace(
+                            src={`http://localhost:3000/${book.coverImage.replace(
                               /\\/g,
                               "/",
                             )}`}
