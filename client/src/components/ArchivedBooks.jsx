@@ -11,7 +11,7 @@ const ArchivedBooks = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:3000/api/books/archived-books",
+          "https://library-management-system-27wb.onrender.com/api/books/archived-books",
           {
             headers: {
               Authorization: `Bearer ${token}`,

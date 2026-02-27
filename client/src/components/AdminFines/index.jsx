@@ -6,7 +6,7 @@ const AdminFines = () => {
   useEffect(() => {
     const fetchUserFines = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/borrow/all-fines", {
+        const res = await fetch("https://library-management-system-27wb.onrender.com/api/borrow/all-fines", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

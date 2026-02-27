@@ -107,7 +107,7 @@ export default function SignupPage() {
     }
     try {
       const res = await fetch(
-        `http://localhost:3000/api/auth/check-username?username=${username}`
+        `https://library-management-system-27wb.onrender.com/api/auth/check-username?username=${username}`
       );
       const data = await res.json();
       if (res.ok && data.available) {
@@ -175,7 +175,7 @@ export default function SignupPage() {
     data.append("profilePic", profilePic);
 
     try {
-      const res = await fetch("http://localhost:3000/api/auth/signup", {
+      const res = await fetch("https://library-management-system-27wb.onrender.com/api/auth/signup", {
         method: "POST",
         body: data,
       });
